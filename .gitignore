@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.log
+*.tmp
+data/cookies/
+weekly_temp/
+weekly_output/
+*.db
+.DS_Store
