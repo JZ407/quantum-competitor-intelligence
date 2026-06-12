@@ -1,0 +1,2 @@
+[console_scripts]
+lit-review = lit_review.cli:app

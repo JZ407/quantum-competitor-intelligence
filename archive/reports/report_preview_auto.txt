@@ -1,0 +1,15 @@
+[0] 今日快讯（2026-5-20）：
+[2] 1、Infleqtion报告2026年第一季度营收创纪录，客户需求加速增长
+[3] 5月14日消息，全球中性原子量子计算与量子传感技术领导者Infleqtion（以下简称“该公司”）公布，2026年第一季度营收为950万美元，同比增长14%。第一季度业绩反映了公司在量子计算、量子传感及软件产品组合方面的持续执行，并受到国家
+[4] 链接：
+[5] https://infleqtion.com/infleqtion-reports-record-q1-revenue-as-customer-demand-accelerates/
+[7] 2、Quantum eMotion与JMEM签署联盟协议，启动后量子安全芯片合作新阶段
+[8] 5月19日消息，Quantum eMotion与JMEM TEK日前宣布签署国际项目联盟协议，以推动双方战略合作进入新阶段。据悉，该协议基于双方于去年9月签署的谅解备忘录，并在加拿大—中国台湾2024–25年协同研发计划（CIIP）框架下推
+[9] 链接：
+[10] https://www.quantumemotion.com/press-release/129/quantum-emotion-and-jmem-tek-sign-consortium-agreement-to-accelerate-qu
+[12] 3、沙特阿美与Pasqal合作启用沙特首台量子计算机 并推出中东首个QCaaS平台
+[13] 5月19日消息，沙特阿美（Aramco）与中性原子量子计算先驱企业Pasqal联手，昨日正式在沙特阿拉伯启用了首台量子计算机。同时，双方还在中东地区推出首个商业化量子计算即服务（QCaaS）平台，为该地区量子技术发展提供新动力，并推动能源、
+[14] 链接：
+[15] https://www.pasqal.com/newsroom/aramco-and-pasqal-launch-saudi-arabias-first-quantum-computer-and-middle-easts-first-com
+[18] 4、专利：（请自行填写）
+[20] 链接：

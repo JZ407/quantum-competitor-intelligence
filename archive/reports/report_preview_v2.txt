@@ -1,0 +1,22 @@
+[0] 今日快讯（2026-5-20）：
+[1] 
+[2] 1、沙特阿美与Pasqal合作启用沙特首台量子计算机 并推出中东首个QCaaS平台
+[3] 5月19日消息，沙特阿美（Aramco）与中性原子量子计算先驱企业Pasqal联手，昨日正式在沙特阿拉伯启用了首台量子计算机。同时，双方还在中东地区推出首个商业化量子计算即服务（QCaaS）平台，为该地区量子技术发展提供新动力，并推动能源、
+[4] 链接：
+[5] https://www.pasqal.com/newsroom/aramco-and-pasqal-launch-saudi-arabias-first-quantum-computer-and-middle-easts-first-com
+[6] 
+[7] 2、富士通与东京科学大学设立联合研究基地，推进量子硬件研发与人才培养
+[8] 5月19日消息，2026年5月15日 -- 富士通有限公司与东京科学大学（Science Tokyo）宣布，在东京科学大学内成立“富士通量子与HPC基础设施联合研究集群”。该联合研究集群旨在系统化、实践性地培养日本在量子硬件技术领域的人才。
+[9] 链接：
+[10] https://global.fujitsu/en-global/pr/news/2026/05/15-02
+[11] 
+[12] 3、Quantum eMotion与JMEM签署联盟协议，启动后量子安全芯片合作新阶段
+[13] 5月19日消息，Quantum eMotion与JMEM TEK日前宣布签署国际项目联盟协议，以推动双方战略合作进入新阶段。据悉，该协议基于双方于去年9月签署的谅解备忘录，并在加拿大—中国台湾2024–25年协同研发计划（CIIP）框架下推
+[14] 链接：
+[15] https://www.quantumemotion.com/press-release/129/quantum-emotion-and-jmem-tek-sign-consortium-agreement-to-accelerate-qu
+[16] 
+[17] 
+[18] 4、专利：（请自行填写）
+[19] 
+[20] 链接：
+[21] 

@@ -1,0 +1,27 @@
+=== PARAGRAPHS ===
+[0] style=Normal | '今日快讯（2026-5-14）：'
+[1] style=Normal | (empty)
+[2] style=Normal | '1、分布式量子计算企业Photonic完成超2亿美元融资，估值达20亿美元'
+[3] style=Normal | '5月12日消息，全球分布式量子计算企业Photonic宣布完成超过2亿美元融资，公司投后估值达到20亿美元，累计融资总额超过3.5亿美元。据官方报道，本轮融资由英国可持续技术成长型股权投资机构Planet First Partners领投，新增投资方包括Business Development Bank of Canada、Export Development Canada、Bell Ventures、Firgun Ventures以及InBC Investment Corp.，现有投资方Mubadala Capital也参与了本轮融资。'
+[4] style=Normal | '链接：'
+[5] style=Normal | 'https://photonic.com/news/photonic-inc-closes-investment-round-with-over-200m-usd-275m-cad/'
+[6] style=Normal | (empty)
+[7] style=Normal | '2、Quantum eMotion与SEETEL、Aegis共推量子安全能源基础设施'
+[8] style=Normal | '5月12日消息，台湾SEETEL熙特尔新能源有限公司、Aegis Critical Energy Defence与Quantum eMotion公司近日宣布，三方的战略合作伙伴关系已进一步扩展，将把基于量子安全的网络安全技术集成至电池储能系统（BESS），并用于关键能源应用场景。据报道，三家公司高管本周在中国台湾地区会晤，并展示了“量子安全BESS”平台，它面向国防、人工智能数据中心、电力公用事业及偏远微电网等市场。此次合作旨在满足人工智能计算、国防及电网韧性等领域对安全分布式能源基础设施的需求。'
+[9] style=Normal | '链接：'
+[10] style=Normal | 'https://www.quantumemotion.com/press-release/128/quantum-secured-power-for-a-post-quantum-world-aegis-quantum-emotion-and-seetel-unveil-defence-grad'
+[11] style=Normal | (empty)
+[12] style=Normal | '3、芬兰物理学家凭低温微波传感器入围欧洲发明奖，助力量子计算稳定运行'
+[13] style=Normal | '5月12日消息，为维持脆弱的量子态，量子系统需在接近绝对零度的极低温环境下运行，在该条件下，即使极微量的多余能量也可能影响系统性能。芬兰物理学家Mikko Möttönen开发出一种低温微波传感器，可用于探测并测量量子计算系统中的微小功率泄漏及电磁干扰源。据了解，该装置可将超低温环境下原本难以观测的干扰过程转化为可测信号，从而帮助定位系统问题并提升量子硬件的可靠性。凭借该项研究成果，Möttönen入围了2026欧洲发明奖“研究”类别最终候选名单。'
+[14] style=Normal | '链接：'
+[15] style=Normal | 'https://www.epo.org/en/news-events/press-centre/press-release/2026/1362422'
+[16] style=Normal | (empty)
+[17] style=Normal | (empty)
+[18] style=Normal | '4、专利：一种量子芯片以及一种量子比特互联电路及其控制方法'
+[19] style=Normal | '2026年5月12日，由山东云海国创云计算装备产业创新中心有限公司申请的CN122021957A发明专利获得公开，发明人为李勇。本发明公开了一种量子芯片以及一种量子比特互联电路及其控制方法，属于量子计算领域，其中，量子比特互联电路，包括：第一量子比特、第二量子比特以及用于耦合第一量子比特和第二量子比特的耦合器件，第一量子比特和第二量子比特均设置于量子芯片的比特层，第一量子比特和第二量子比特位于比特层的不同区域上，耦合器件的频率可调节，且耦合器件设置于量子芯片的线路连接层上，比特层和线路连接层通过硅通孔耦合在一起。利用该量子比特互联电路可以在不增加布线难度的基础上，在量子芯片上增加部署量子比特的数量。'
+[20] style=Normal | (empty)
+[21] style=Normal | '链接：'
+[22] style=Normal | 'https://www.baiten.cn/so/CN202610242987.0.html?q=%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97&sort=DESC&sortField=pd&rows=10&page=1&sc=35184372088831&type=detail&subType=abst'
+[23] style=Normal | (empty)
+
+=== TABLES ===

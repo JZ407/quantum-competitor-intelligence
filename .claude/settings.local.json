@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python *)",
+      "Bash(\\\\c\\\\Program Files\\\\MySQL\\\\MySQL Server 8.4\\\\bin\\\\mysql.exe *)",
+      "Bash(C:/Program Files/MySQL/MySQL Server 8.4/bin/mysql.exe *)",
+      "Bash(tasklist)",
+      "Bash(/c/Python314/python *)",
+      "Bash(curl *)",
+      "WebSearch",
+      "Bash(powershell *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(PYTHONIOENCODING=utf-8 python examples/generate_weekly_report.py --start 2026-05-23 --end 2026-05-29 --issue 11 --conf-month 6)",
+      "Bash(PYTHONIOENCODING=utf-8 python _check_v2.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python examples/full_scrape_homepage.py --dry-run)",
+      "Bash(dir \"C:\\\\ProgramData\\\\MySQL\")",
+      "Bash(dir \"C:\\\\mysql\")",
+      "Bash(dir \"D:\\\\mysql\")",
+      "Bash(dir \"C:\\\\Users\\\\zhouj\\\\mysql\")",
+      "Read(//c/Program Files/MySQL/MySQL Server 8.4/**)",
+      "WebFetch(domain:fund.eastmoney.com)",
+      "Bash(taskkill /F /IM streamlit.exe)",
+      "Bash(streamlit run *)",
+      "Bash(net start *)",
+      "Bash(sc query *)",
+      "Read(//c/Program Files/MySQL/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Read(//c//**)",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysqld.exe\" --console)",
+      "Bash(echo \"port check: $?\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysqld.exe\" --datadir=\"C:/Users/zhouj/mysql_data\" --console)",
+      "Bash(wmic process *)",
+      "Read(//proc/6784/**)"
+    ]
+  }
+}

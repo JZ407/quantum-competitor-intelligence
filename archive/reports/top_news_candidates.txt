@@ -1,0 +1,87 @@
+近期文章候选（共21篇）
+============================================================
+
+[45] 评分:36 | Infleqtion报告2026年第一季度营收创纪录，客户需求加速增长
+    类型:article | 原始日期:2026-05-14
+    参考链接:https://infleqtion.com/infleqtion-reports-record-q1-revenue-
+
+[10] 评分:22 | 量子计算公司Nord Quantique获3000万美元融资，估值约14亿美元
+    类型:flash | 原始日期:2026-05-15
+    参考链接:https://thequantuminsider.com/2026/05/15/nord-quantique-reac
+
+[47] 评分:21 | 富士通与东京科学大学设立联合研究基地，推进量子硬件研发与人才培养
+    类型:article | 原始日期:2026-05-19
+    参考链接:https://global.fujitsu/en-global/pr/news/2026/05/15-02
+
+[4] 评分:19 | 沙特阿美与Pasqal合作启用沙特首台量子计算机 并推出中东首个QCaaS平台
+    类型:flash | 原始日期:2026-05-19
+    参考链接:https://www.pasqal.com/newsroom/aramco-and-pasqal-launch-sau
+
+[49] 评分:19 | Q.ANT与欧洲云服务商IONOS达成合作，其光子计算AI加速技术首登商业云
+    类型:flash | 原始日期:2026-05-19
+    参考链接:https://qant.com/news/q-ant-takes-photonic-ai-computing-comm
+
+[50] 评分:19 | Quantum eMotion与JMEM签署联盟协议，启动后量子安全芯片合作新阶段
+    类型:flash | 原始日期:2026-05-19
+    参考链接:https://www.quantumemotion.com/press-release/129/quantum-emo
+
+[6] 评分:17 | 克莱姆森大学获65万美元资助，支持打造可扩展量子计算系统实验室
+    类型:flash | 原始日期:2026-05-19
+    参考链接:https://www.scquantum.org/news/clemson-university-advances-q
+
+[44] 评分:16 | 科学家描绘出可变革计算技术的材料发展路线图
+    类型:article | 原始日期:2026-05-19
+    参考链接:https://www.uottawa.ca/about-us/news-all/scientists-chart-pa
+
+[41] 评分:15 | 韩国科学家利用二维半导体在室温下实现明亮量子光发射
+    类型:article | 原始日期:2026-05-19
+    参考链接:https://ibs.re.kr/cop/bbs/BBSMSTR_000000000738/selectBoardAr
+
+[8] 评分:14 | 美国能源部发布容错量子计算RFI通知，剑指2028年前部署科学级FTQC系统
+    类型:flash | 原始日期:2026-05-15
+    参考链接:https://quantumcomputingreport.com/u-s-department-of-energy-
+
+[42] 评分:14 | QNu Labs被MarketsandMarkets评为量子密钥分发市场的明星企业
+    类型:article | 原始日期:2026-05-14
+    参考链接:https://www.prnewswire.com/news-releases/qnu-labs-is-recogni
+
+[48] 评分:14 | 德国德累斯顿工业大学设立两大新实验室，聚焦量子技术与AI交互研究
+    类型:flash | 原始日期:2026-05-19
+    参考链接:https://www.squad-germany.de/en/new-quantum-lab-at-tu-dresde
+
+[1] 评分:12 | Sitehop推出紧凑型后量子加密设备，守护工业与能源网络安全
+    类型:flash | 原始日期:2026-05-18
+    参考链接:https://thequantuminsider.com/2026/05/18/sitehop-post-quantu
+
+[5] 评分:12 | 韩国联合研究团队开发新型量子光源 室温下可发射明亮光信号
+    类型:flash | 原始日期:2026-05-19
+    参考链接:https://ibs.re.kr/cop/bbs/BBSMSTR_000000000738/selectBoardAr
+
+[7] 评分:12 | 印度马哈拉施特拉邦启动量子技术技能发展计划，多方机构参与共建
+    类型:flash | 原始日期:2026-05-17
+    参考链接:https://www.hindustantimes.com/cities/pune-news/quantum-tech
+
+[9] 评分:12 | BNB Chain完成加密基础设施升级，引入后量子密码抵御量子计算威胁
+    类型:flash | 原始日期:2026-05-15
+    参考链接:https://www.cointrust.com/market-news/bnb-chain-adopts-post-
+
+[46] 评分:12 | 九种候选方案晋级后量子密码标准化流程附加数字签名第三轮评选
+    类型:article | 原始日期:2026-05-13
+    参考链接:https://csrc.nist.gov/News/2026/nist-advances-9-candidates-t
+
+[43] 评分:11 | 让“光”轻松完成计算任务
+    类型:article | 原始日期:2026-04-23
+    参考链接:https://penntoday.upenn.edu/news/making-light-work-computing
+
+[2] 评分:10 | 七国集团警告量子风险：金融安全面临变革，后量子密码成关键防线
+    类型:flash | 原始日期:2026-05-18
+    参考链接:https://thequantuminsider.com/2026/05/18/the-good-the-bad-an
+
+[3] 评分:10 | 伊利诺伊卫斯理大学成立全美首个本科跨学科量子中心
+    类型:flash | 原始日期:2026-05-14
+    参考链接:https://www.iwu.edu/news/2026/illinois-wesleyan-announces-in
+
+[11] 评分:-3 | 量子抗性网络：原语、协议与最佳实践综述
+    类型:reference | 原始日期:2026-05-18
+    参考链接:https://arxiv.org/abs/2605.04129
+

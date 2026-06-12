@@ -1,0 +1,93 @@
+量科网 2026-05-19 新闻抓取结果（更新版）
+共 17 篇文章
+所有文章均已存储正文内容
+============================================================
+
+【快讯/文章】17 篇
+[1] Sitehop推出紧凑型后量子加密设备，守护工业与能源网络安全
+    原始日期: 2026-05-18 | 来源: thequantuminsider.com
+    参考链接: https://thequantuminsider.com/2026/05/18/sitehop-post-quantum-encryption-pqc-device/
+    正文长度: 181 字
+------------------------------------------------------------
+[2] 七国集团警告量子风险：金融安全面临变革，后量子密码成关键防线
+    原始日期: 2026-05-18 | 来源: thequantuminsider.com
+    参考链接: https://thequantuminsider.com/2026/05/18/the-good-the-bad-and-the-buggy-g7-paper-outlines-promises-and-threats-of-quantum-tech-for-the-financial-system/
+    正文长度: 192 字
+------------------------------------------------------------
+[3] 伊利诺伊卫斯理大学成立全美首个本科跨学科量子中心
+    原始日期: 2026-05-14 | 来源: www.iwu.edu
+    参考链接: https://www.iwu.edu/news/2026/illinois-wesleyan-announces-interdisciplinary-undergraduate-quantum-science-engineering-center.html
+    正文长度: 158 字
+------------------------------------------------------------
+[4] 沙特阿美与Pasqal合作启用沙特首台量子计算机 并推出中东首个QCaaS平台
+    原始日期: 2026-05-19 | 来源: www.pasqal.com
+    参考链接: https://www.pasqal.com/newsroom/aramco-and-pasqal-launch-saudi-arabias-first-quantum-computer-and-middle-easts-first-commercial-quantum-computing-as-a-service-platform/
+    正文长度: 191 字
+------------------------------------------------------------
+[5] 韩国联合研究团队开发新型量子光源 室温下可发射明亮光信号
+    原始日期: 2026-05-19 | 来源: ibs.re.kr
+    参考链接: https://ibs.re.kr/cop/bbs/BBSMSTR_000000000738/selectBoardArticle.do;jsessionid=A737976C75203FB4AD235825DFFF716C?nttId=26633&pageIndex=1&searchCnd=&searchWrd=
+    正文长度: 165 字
+------------------------------------------------------------
+[6] 克莱姆森大学获65万美元资助，支持打造可扩展量子计算系统实验室
+    原始日期: 2026-05-19 | 来源: www.scquantum.org
+    参考链接: https://www.scquantum.org/news/clemson-university-advances-quantum-software-research-through-650000-initiative-focused-real
+    正文长度: 223 字
+------------------------------------------------------------
+[7] 印度马哈拉施特拉邦启动量子技术技能发展计划，多方机构参与共建
+    原始日期: 2026-05-17 | 来源: www.hindustantimes.com
+    参考链接: https://www.hindustantimes.com/cities/pune-news/quantum-tech-training-hub-to-come-up-at-iiser-pune-101778957495435-amp.html
+    正文长度: 230 字
+------------------------------------------------------------
+[8] 美国能源部发布容错量子计算RFI通知，剑指2028年前部署科学级FTQC系统
+    原始日期: 2026-05-15 | 来源: quantumcomputingreport.com
+    参考链接: https://quantumcomputingreport.com/u-s-department-of-energy-issues-rfi-for-2028-fault-tolerant-quantum-computer/
+    正文长度: 249 字
+------------------------------------------------------------
+[9] BNB Chain完成加密基础设施升级，引入后量子密码抵御量子计算威胁
+    原始日期: 2026-05-15 | 来源: www.cointrust.com
+    参考链接: https://www.cointrust.com/market-news/bnb-chain-adopts-post-quantum-security-upgrade
+    正文长度: 249 字
+------------------------------------------------------------
+[10] 量子计算公司Nord Quantique获3000万美元融资，估值约14亿美元
+    原始日期: 2026-05-15 | 来源: thequantuminsider.com
+    参考链接: https://thequantuminsider.com/2026/05/15/nord-quantique-reaches-1-4-billion-valuation-in-fidelity-backed-financing/
+    正文长度: 206 字
+------------------------------------------------------------
+[41] 韩国科学家利用二维半导体在室温下实现明亮量子光发射
+    原始日期: 2026-05-19 | 来源: ibs.re.kr
+    参考链接: https://ibs.re.kr/cop/bbs/BBSMSTR_000000000738/selectBoardArticle.do;jsessionid=A737976C75203FB4AD235825DFFF716C?nttId=26633&amp;pageIndex=1&amp;searchCnd=&amp;searchWrd=
+    正文长度: 1904 字
+------------------------------------------------------------
+[42] QNu Labs被MarketsandMarkets评为量子密钥分发市场的明星企业
+    原始日期: 2026-05-14 | 来源: www.prnewswire.com
+    参考链接: https://www.prnewswire.com/news-releases/qnu-labs-is-recognized-as-a-star-player-in-the-marketsandmarkets-360quadrants-for-the-quantum-key-distribution-qkd-market-302772109.html
+    正文长度: 967 字
+------------------------------------------------------------
+[43] 让“光”轻松完成计算任务
+    原始日期: 2026-04-23 | 来源: penntoday.upenn.edu
+    参考链接: https://penntoday.upenn.edu/news/making-light-work-computing
+    正文长度: 848 字
+------------------------------------------------------------
+[44] 科学家描绘出可变革计算技术的材料发展路线图
+    原始日期: 2026-05-19 | 来源: www.uottawa.ca
+    参考链接: https://www.uottawa.ca/about-us/news-all/scientists-chart-path-toward-materials-could-transform-computing
+    正文长度: 1223 字
+------------------------------------------------------------
+[45] Infleqtion报告2026年第一季度营收创纪录，客户需求加速增长
+    原始日期: 2026-05-14 | 来源: infleqtion.com
+    参考链接: https://infleqtion.com/infleqtion-reports-record-q1-revenue-as-customer-demand-accelerates/
+    正文长度: 1365 字
+------------------------------------------------------------
+[46] 九种候选方案晋级后量子密码标准化流程附加数字签名第三轮评选
+    原始日期: 2026-05-13 | 来源: csrc.nist.gov
+    参考链接: https://csrc.nist.gov/News/2026/nist-advances-9-candidates-to-the-3rd-round-of-pqc
+    正文长度: 322 字
+------------------------------------------------------------
+[47] 富士通与东京科学大学设立联合研究基地，推进量子硬件研发与人才培养
+    原始日期: 2026-05-19 | 来源: global.fujitsu
+    参考链接: https://global.fujitsu/en-global/pr/news/2026/05/15-02
+    正文长度: 1436 字
+------------------------------------------------------------
+
+【学术参考】{len(refs)} 篇

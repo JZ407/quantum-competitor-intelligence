@@ -1,0 +1,48 @@
+=== Finding max pages for /news ===
+page=1: 30 articles, first=['177909648732391', '177909648732391']
+page=2: 30 articles, first=['177902310732287', '177902310732287']
+page=4: 30 articles, first=['177866352131953', '177866352131953']
+page=8: 30 articles, first=['177829752531527', '177829752531527']
+page=16: 30 articles, first=['177820092431533', '177820092431533']
+page=32: 30 articles, first=['177820092431533', '177820092431533']
+  -> Empty or duplicate at page 32
+Binary search range: 8 - 32
+  check page=8: 30 articles
+  check page=20: 30 articles
+  check page=31: 30 articles
+  check page=32: 30 articles
+  check page=33: 30 articles
+
+=== Finding max pages for /flash ===
+page=1: 20 articles, first=['177907644232400', '177907592332398']
+page=2: 20 articles, first=['177880890732300', '177880764931742']
+page=4: 20 articles, first=['177854484831747', '177846924531849']
+page=8: 20 articles, first=['177742290730958', '177742169930961']
+page=16: 20 articles, first=['177579204229483', '177579042129491']
+page=32: 20 articles, first=['177301842826899', '177301782826889']
+page=64: 20 articles, first=['176576460421792', '176576352721791']
+page=128: 20 articles, first=['175392258813696', '175392210513701']
+page=256: 20 articles, first=['17249779886746', '17249772136744']
+page=512: 0 articles, first=EMPTY
+  -> Empty or duplicate at page 512
+Binary search range: 128 - 512
+  check page=128: 20 articles
+  check page=320: 20 articles
+  check page=511: 0 articles
+  check page=512: 0 articles
+  check page=513: 0 articles
+
+=== Finding max pages for /reference ===
+page=1: 10 articles, first=['177925831232544', '177925819432543']
+page=2: 10 articles, first=['177925687432534', '177925674232533']
+page=4: 10 articles, first=['177925109032513', '177925095832512']
+page=8: 10 articles, first=['177924594232474', '177924581032473']
+page=16: 10 articles, first=['177907408632412', '177890562232389']
+page=32: 10 articles, first=['177907408632412', '177890562232389']
+  -> Empty or duplicate at page 32
+Binary search range: 8 - 32
+  check page=8: 10 articles
+  check page=20: 10 articles
+  check page=31: 10 articles
+  check page=32: 10 articles
+  check page=33: 10 articles

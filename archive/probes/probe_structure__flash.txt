@@ -1,0 +1,7 @@
+=== /flash ===
+Total containers matching news/flash/reference/list: 42
+  container 0 class=['term-box', 'flash-box']: 20 article links, first few=['177924762032458', '177924666032454', '177924312732460']
+  container 1 class=['flash-list']: 20 article links, first few=['177924762032458', '177924666032454', '177924312732460']
+  container 2 class=['flash-created']: 0 article links, first few=[]
+  container 3 class=['newsflash-company', 'clearfix']: 0 article links, first few=[]
+  container 4 class=['flash-created']: 0 article links, first few=[]

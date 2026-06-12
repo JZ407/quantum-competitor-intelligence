@@ -1,0 +1,15 @@
+=== Exact max for /news ===
+Page 40 still has content, need to search higher
+
+=== Exact max for /flash ===
+page=460: 0 articles
+page=429: 20 articles
+page=444: 0 articles
+page=436: 0 articles
+page=432: 20 articles
+page=434: 0 articles
+page=433: 9 articles
+Max valid page: 433
+
+=== Exact max for /reference ===
+Page 40 still has content, need to search higher

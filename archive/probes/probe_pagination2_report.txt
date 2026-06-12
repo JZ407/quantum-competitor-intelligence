@@ -1,0 +1,31 @@
+=== Probing /news max pages ===
+page=   0: OK, articles=52
+page=   1: OK, articles=59
+page=   5: OK, articles=59
+page=  10: OK, articles=59
+page=  20: OK, articles=59
+page=  50: OK, articles=59
+page= 100: OK, articles=59
+page= 200: OK, articles=59
+page= 500: OK, articles=59
+page=1000: OK, articles=59
+
+=== Probing /flash pages ===
+page=   0: OK, articles=20
+page=   1: OK, articles=20
+page=   5: OK, articles=20
+page=  10: OK, articles=20
+page=  20: OK, articles=20
+page=  50: OK, articles=20
+page= 100: OK, articles=20
+
+=== Probing /reference pages ===
+page=   0: OK, articles=10
+page=   1: OK, articles=10
+page=   5: OK, articles=10
+page=  10: OK, articles=10
+page=  20: OK, articles=10
+page=  50: OK, articles=10
+page= 100: OK, articles=10
+
+/reference/arxiv: articles=10

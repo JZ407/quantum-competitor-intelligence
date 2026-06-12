@@ -1,0 +1,8 @@
+=== Exact max for /news ===
+Page 200 still has content, need to search higher
+
+=== Exact max for /news ===
+Page 500 still has content, need to search higher
+
+=== Exact max for /reference ===
+Page 200 still has content, need to search higher
