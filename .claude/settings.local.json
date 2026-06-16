@@ -32,7 +32,9 @@
       "Bash(echo \"port check: $?\")",
       "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysqld.exe\" --datadir=\"C:/Users/zhouj/mysql_data\" --console)",
       "Bash(wmic process *)",
-      "Read(//proc/6784/**)"
+      "Read(//proc/6784/**)",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysqladmin.exe\" -u root ping)",
+      "Bash(C:/Python314/python.exe -X utf8 core/scrape_daily.py)"
     ]
   }
 }
