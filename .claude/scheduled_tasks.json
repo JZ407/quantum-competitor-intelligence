@@ -16,7 +16,7 @@
       "cron": "7 13 * * *",
       "prompt": "搜索并入库国内量子投融资新闻。\n\n## 搜索\n用 WebSearch 依次搜索（allowed_domains: eastmoney.com, stcn.com, finance.sina.com.cn, news.qq.com, chinaventure.com.cn, pedaily.cn, people.com.cn, xinhuanet.com, 10jqka.com.cn, cls.cn, 163.com, ah.gov.cn, beijing.gov.cn, shanghai.gov.cn, gd.gov.cn, hubei.gov.cn, zj.gov.cn, jiangsu.gov.cn, sc.gov.cn, hefei.gov.cn, wuhan.gov.cn, haidian.gov.cn, shenzhen.gov.cn, hangzhou.gov.cn, chengdu.gov.cn, suzhou.gov.cn, nanjing.gov.cn, wuxi.gov.cn），共 21 组 query：\n\n**轮次（9 组）**\n1. \"量子 天使轮 融资 亿元\"\n2. \"量子 天使轮 融资 数千万元\"\n3. \"量子 Pre-A 融资 亿元\"\n4. \"量子 A轮 融资 亿元\"\n5. \"量子 B轮 融资 亿元\"\n6. \"量子 C轮 融资 亿元\"\n7. \"量子 D轮 融资 亿元\"\n8. \"量子 Pre-IPO 融资 亿元\"\n9. \"量子 战略融资 亿元\"\n\n**技术路线精选（3 组）**\n10. \"量子 超导 融资 亿元\"\n11. \"量子 离子阱 中性原子 融资 亿元\"\n12. \"量子 测量 传感 融资 亿元\"\n\n**IPO/基金/收购（4 组）**\n13. \"量子 IPO 过会\"\n14. \"量子 科创板 上市\"\n15. \"量子 基金\"\n16. \"量子 收购\"\n\n**地域（5 组）**\n17. \"合肥 量子 融资\"\n18. \"北京 量子 融资\"\n19. \"深圳 量子 融资\"\n20. \"武汉 量子 融资\"\n21. \"上海 量子 融资\"\n\n## 入库规则（重要！）\n1. **URL 必须来自 WebSearch 返回结果，禁止自己编造。** 找不到真实 URL 的跳过，不插入。\n2. 只收录中国大陆量子公司具体投融资事件，排除海外、宏观/汇总/盘点/趋势类文章。\n3. 去重：先用 D:/Claude_code/liangke_daily/core/ 下的 Python 查 articles 表，标题相同则跳过。\n4. 入库参数：page_type='websearch', tags={'weekly': ['资本运作'], 'search_tags': ['国内投融资', 'websearch']}, content 末尾加 \"🤖 本文由 AI 摘要生成，原文见链接\"。\n5. 记录本次入库数量。",
       "createdAt": 1781164686817,
-      "lastFiredAt": 1781501820664,
+      "lastFiredAt": 1781588220614,
       "recurring": true,
       "createdBySessionId": "2526a13b-e59c-4f09-8b2d-d396b9b80e3f",
       "createdByPid": 21696
