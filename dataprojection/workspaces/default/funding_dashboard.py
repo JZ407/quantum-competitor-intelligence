@@ -6,6 +6,7 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 import re
+import json
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -21,21 +22,10 @@ st.set_page_config(
 
 # ═══ 数据库路径 ═══
 import os
-DB_CANDIDATES = [
-    r"D:\Claude_code\liangke_historical\historical_final.db",
-    r"D:\Claude_code\liangke_historical\historical_v3.db",
-    r"D:\Claude_code\liangke_historical\historical.db",
-    r"D:\Claude_code\liangke_historical\historical_v2.db",
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "historical.db"),
-]
-DB_PATH = None
-for p in DB_CANDIDATES:
-    if os.path.exists(p):
-        DB_PATH = p
-        break
+DB_PATH = r"D:\Claude_code\liangke_historical\historical_final.db"
 
-if DB_PATH is None:
-    st.error("❌ 未找到数据库文件！请检查 historical_final.db 路径。")
+if not os.path.exists(DB_PATH):
+    st.error(f"❌ 历史库不存在: {DB_PATH}")
     st.stop()
 
 
@@ -133,18 +123,120 @@ def extract_amount_from_row(row) -> float | None:
 
 
 # ═══ 数据加载 ═══
+# 每日库 MySQL 连接
+MYSQL_CONFIG = {
+    "host": "127.0.0.1",
+    "port": 3306,
+    "user": "scraper",
+    "password": "scraper123",
+    "database": "liangke_scraper",
+    "charset": "utf8mb4",
+}
+
+# 国内量子企业（用于 area 推断）
+CHINESE_COMPANIES = {
+    '本源量子', '量旋科技', '相干科技', '逻辑比特', '矩量光启', '武汉超磁科技',
+    '玻色量子', '图灵量子', '正则量子', '奇算光启', '华翊量子', '幺正量子',
+    '中科酷原', '无量量子', '太一量生', '两仪万象', '无问清芯', '不筹量子', '原子矩阵',
+    '国仪量子', '国测量子', '未磁科技', '频准激光', '国光量子',
+    '国盾量子', '国科量子', '微观纪元', '量坤科技', '瀚海量子', '隧穿智元',
+    '知冷低温', '量羲技术', '森一量子', '硅臻量子', '天芯量子', '矩阵时光',
+    '太微量子', '伏曦量子',
+}
+
+
+def _derive_area(row) -> str:
+    """从 tags/title/content 推断地区"""
+    tags = row.get("tags")
+    title = str(row.get("title", ""))
+
+    # 1. 从 funding.company 判断
+    if isinstance(tags, str):
+        try:
+            tags = json.loads(tags)
+        except (json.JSONDecodeError, TypeError):
+            tags = {}
+    if isinstance(tags, dict):
+        company = (tags.get("funding", {}) or {}).get("company", "")
+        if company in CHINESE_COMPANIES:
+            return "中国"
+        if company and any('一' <= c <= '鿿' for c in company):
+            return "中国"
+
+    # 2. 标题关键词
+    cn_kw = ['合肥', '北京', '上海', '深圳', '武汉', '成都', '杭州', '南京', '济南', '广州',
+             '厦门', '湖州', '本源', '国盾', '国仪', '图灵', '玻色', '华翊', '幺正', '量旋',
+             '正则', '奇算', '相干', '逻辑', '矩量', '中科酷原', '太一', '无问清芯', '不筹',
+             '国测量子', '国光', '未磁', '频准激光', '知冷低温', '量羲', '微观纪元', '瀚海',
+             '硅臻', '森一', '量坤', '隧穿', '太微', '伏曦', '天芯', '矩阵时光',
+             '湖北', '四川', '安徽']
+    if any(kw in title for kw in cn_kw):
+        return "中国"
+
+    # 3. 海外关键词
+    overseas_kw = ['美国', '英国', '法国', '德国', '加拿大', '芬兰', '以色列', '日本',
+                   '韩国', '荷兰', '瑞士', '瑞典', '澳大利亚', '欧盟', '欧洲']
+    for kw in overseas_kw:
+        if kw in title:
+            return kw if kw != '欧盟' else '欧洲'
+
+    return "海外"
+
+
 @st.cache_data(ttl=300)
 def load_funding_data():
-    """加载所有融资相关文章并提取金额"""
+    """加载所有融资相关文章 — 每日库(MySQL) + 历史库(SQLite)"""
+    dfs = []
+
+    # ── 1. 每日库: MySQL (量科网抓取 + websearch) ──
+    try:
+        from sqlalchemy import create_engine
+        mysql_engine = create_engine(
+            'mysql+pymysql://scraper:scraper123@127.0.0.1:3306/liangke_scraper?charset=utf8mb4'
+        )
+        df_mysql = pd.read_sql(
+            """
+            SELECT id, title, content, liangke_date as published_at,
+                   page_type as article_type, tags, source_domain, liangke_url
+            FROM articles
+            WHERE liangke_date IS NOT NULL
+              AND (
+                tags LIKE '%%融资%%'
+                OR tags LIKE '%%资本运作%%'
+                OR tags LIKE '%%国内投融资%%'
+              )
+            ORDER BY liangke_date DESC
+            """,
+            mysql_engine,
+        )
+        mysql_engine.dispose()
+
+        if not df_mysql.empty:
+            # 解析 JSON tags
+            def parse_tags(t):
+                if isinstance(t, str):
+                    try: return json.loads(t)
+                    except: return {}
+                return t if isinstance(t, dict) else {}
+            df_mysql["tags_parsed"] = df_mysql["tags"].apply(parse_tags)
+
+            # 添加缺失列
+            df_mysql["area"] = df_mysql.apply(_derive_area, axis=1)
+            df_mysql["category"] = ""
+            df_mysql["id"] = df_mysql["id"].astype(str)  # 避免与 SQLite id 冲突
+
+            dfs.append(df_mysql)
+    except Exception as e:
+        st.warning(f"⚠️ MySQL（每日库）连接失败: {e}")
+
+    # ── 2. 历史库: SQLite (v2+v3 合并) ──
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
 
-    # 检查 published_at 列名（兼容不同数据库版本）
     cursor = conn.cursor()
     cursor.execute("PRAGMA table_info('articles')")
     columns = [row[1] for row in cursor.fetchall()]
 
-    # 确定日期列名
     if "published_at" in columns:
         date_col = "published_at"
     elif "liangke_date" in columns:
@@ -152,24 +244,36 @@ def load_funding_data():
     else:
         date_col = None
 
-    if date_col is None:
-        conn.close()
-        return None, "no_date_column", columns
-
-    df = pd.read_sql(
-        f"""
-        SELECT id, title, content, area, {date_col} as published_at,
-               article_type, tags, category, source_domain, liangke_url
-        FROM articles
-        WHERE tags LIKE '%融资%' AND {date_col} IS NOT NULL
-        ORDER BY {date_col} DESC
-        """,
-        conn,
-    )
+    if date_col is not None:
+        df_sqlite = pd.read_sql(
+            f"""
+            SELECT CAST(id AS TEXT) as id, title, content,
+                   COALESCE(area, '') as area,
+                   {date_col} as published_at,
+                   article_type, tags,
+                   COALESCE(category, '') as category,
+                   COALESCE(source_domain, '') as source_domain,
+                   liangke_url
+            FROM articles
+            WHERE tags LIKE '%融资%' AND {date_col} IS NOT NULL
+            ORDER BY {date_col} DESC
+            """,
+            conn,
+        )
+        dfs.append(df_sqlite)
     conn.close()
 
+    # ── 合并 ──
+    if not dfs:
+        return pd.DataFrame(), "empty", []
+
+    df = pd.concat(dfs, ignore_index=True)
+
+    # 去重（按 title + published_at）
+    df = df.drop_duplicates(subset=["title", "published_at"], keep="first")
+
     if df.empty:
-        return df, "empty", columns
+        return df, "empty", columns if 'columns' in dir() else []
 
     # 解析日期
     df["published_at"] = pd.to_datetime(df["published_at"], errors="coerce")
@@ -184,7 +288,7 @@ def load_funding_data():
     # 月度
     df["month"] = df["published_at"].dt.to_period("M")
 
-    return df, "ok", columns
+    return df, "ok", columns if 'columns' in dir() else []
 
 
 def _normalize_area(area):
