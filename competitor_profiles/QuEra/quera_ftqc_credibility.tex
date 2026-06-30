@@ -1,0 +1,213 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[top=2.5cm,bottom=2cm,left=2.2cm,right=2.2cm]{geometry}
+\usepackage{xcolor,titlesec,fancyhdr,hyperref,booktabs,array,enumitem}
+\definecolor{mainred}{HTML}{E94560}
+\definecolor{graytext}{HTML}{666666}
+\hypersetup{colorlinks=true,linkcolor=mainred,urlcolor=mainred}
+\titleformat{\section}{\color{mainred}\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\color{mainred}\large\bfseries}{\thesubsection}{1em}{}
+\setlist{nosep,leftmargin=*}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\color{graytext}\small QuEra Computing · 技术路线评估}
+\fancyhead[R]{\color{graytext}\small 内部参考}
+\fancyfoot[C]{\color{graytext}\small ---\ \thepage\ ---}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{mainred}\leaders\hrule height \headrulewidth\hfill}}
+\sloppy
+\title{\vspace{2cm}{\Huge\bfseries\color{mainred} QuEra 2028 年容错量子计算\\[6pt]技术路线分析}\\[16pt]\rule{0.5\textwidth}{1.5pt}\\[12pt]{\large\color{graytext}内部参考 · 含限定条件与风险标注}\\[16pt]{\footnotesize\color{graytext}\today}}
+\date{}
+\begin{document}
+\maketitle\thispagestyle{empty}
+\newpage
+
+\section{报告说明}
+
+本报告旨在对 QuEra 宣称的 2028 年实现 1,000+ 逻辑量子比特、$10^{-9}$ 保真度的技术路线进行分析。分析遵循以下原则：
+
+\begin{itemize}
+\item \textbf{区分已验证与未验证}：明确标注哪些结果来自经同行评审的期刊论文，哪些来自 arXiv 预印本或公司自我报告
+\item \textbf{标注限定条件}：每一项性能指标都附带其适用的前提条件（问题类型、假设参数、演示规模等）
+\item \textbf{指明不确定性}：对被省略或未公开的关键参数，明确指出其对结论的影响
+\end{itemize}
+
+\section{QuEra 的技术路线包含哪些主张？}
+
+QuEra 在 2026 年 6 月的 AWS 联合发布会上公开了以下路线图目标：
+
+\begin{center}
+\begin{tabular}{p{3cm}p{3.5cm}p{3.5cm}p{3.5cm}}
+\toprule
+\textbf{指标} & \textbf{Aquila（已交付）} & \textbf{Libra（2028 目标）} & \textbf{Next Gen（2028-29 目标）} \\
+\midrule
+物理量子比特 & 256 & 10,000--15,000 & 20,000+ \\
+逻辑量子比特 & 0（仅模拟模式） & 256 & 1,000+ \\
+逻辑错误率 & N/A & $10^{-6}$ & $10^{-9}$ \\
+部署平台 & AWS Braket & AWS Braket & AWS Braket \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+从 256 物理比特到 10,000+ 物理比特的工程放大约为 \textbf{40--60 倍}。从无纠错到 $10^{-9}$ 逻辑错误率的性能跨越约为 \textbf{6 个数量级}。需要在约 32 个月内完成。
+
+\section{STAR 架构：解决了什么，没解决什么}
+
+\subsection{架构的演示条件}
+
+Transversal STAR 架构的核心论文发表于 2026 年 5 月 PRX Quantum（arXiv 预印本于 2025 年 9 月），合作方为 Los Alamos 国家实验室。该论文是一篇\textbf{架构设计论文}，不是硬件演示论文——它通过数值模拟和理论分析论证了该架构的可行性，而非在真实硬件上运行。
+
+论文的模拟假设条件包括：
+\begin{itemize}
+\item 物理错误率 $p_{\mathrm{ph}} \approx 10^{-3}$
+\item 原子 shuttling 错误率与门错误率可比（未被独立验证）
+\item 校验子提取的延迟在可接受范围内（依赖 NVIDIA GPU 实时解码，解码延迟的微秒级要求尚未在 QuEra 硬件上公开展示）
+\end{itemize}
+
+\subsection{消除魔态蒸馏的真实收益}
+
+传统容错方案中，魔态蒸馏工厂确实消耗大量资源。STAR 架构通过横向注入替代蒸馏，\textbf{在理论上}消除了这一开销。但需注意：
+
+\begin{itemize}
+\item 横向注入需要 post-selection——制备失败时丢弃结果重试。论文估算平均重试 2 次，但这取决于物理错误率的精确值，且会引入\textbf{概率性延迟}（量子计算的 wall-clock 时间不可预测）
+\item 蒸馏消除的收益量级取决于目标应用：对于 T 门密集的通用量子算法（如 Shor 算法），蒸馏开销占比极高；但对于 STAR 架构目标的结构化量子模拟任务（见下节），蒸馏开销本就低于通用场景——因此对后者的收益可能被夸大
+\end{itemize}
+
+\subsection{应用范围的限定}
+
+STAR 论文明确将架构定位于\textbf{结构化量子模拟}（structured quantum simulation），而非通用量子计算。其宣称的性能优势以下列应用为前提：
+\begin{itemize}
+\item 自旋晶格哈密顿量（Heisenberg、XY、Ising 模型）
+\item 费米-哈伯德模型
+\item 量子化学的 ab-initio 分子哈密顿量
+\end{itemize}
+这些问题的共同特征是\textbf{所需魔态角度较小}（$\theta$ 小），因此横向注入的 post-selection 成功率高、重试次数少。对于需要大角度魔态的通用算法，该架构的优势将显著缩小。\textbf{STAR 架构不是通用量子计算的加速器，而是特定科学计算工作负载的优化方案。}
+
+\subsection{速度提升的维度}
+
+论文宣称的 ``250 倍速度提升'' 比较的是 Transversal STAR 与固定连接全容错架构在执行特定模拟任务时的\textbf{逻辑时钟周期数}。这是一个具体的架构层面比较，不是端到端应用加速比。需注意：
+\begin{itemize}
+\item 比较对象是固定连接架构（如超导芯片），而非同样全连通的离子阱架构
+\item 速度提升不直接等于量子比特节省——两者是不同维度
+\end{itemize}
+
+\section{qLDPC 编码：理论极限 vs 实践}
+
+\subsection{编码率的真实含义}
+
+论文讨论了 qLDPC 编码在 STAR 架构上的应用，描述了从 surface code（编码率 $\sim 1/d^2$，典型 $d=9$ 时为 $\sim 1:81$）到 qLDPC 编码（编码率可达 $1:10$ 至 $1:2$）的提升。\textbf{但需注意：}
+
+\begin{itemize}
+\item 编码率 $1:2$ 是特定高率 qLDPC 构造的\textbf{理论极限}，需要极低的物理错误率（远低于当前中性原子平台的 $\sim 10^{-3}$）
+\item 论文中实际模拟的编码率约为 $1:10$ 至 $1:20$，而非 $1:2$
+\item qLDPC 编码的长程连通性需求对中性原子平台是可行的（因为全连通），但\textbf{编码的校验子提取和实时解码在 10,000+ 量子比特规模上尚未得到实验验证}
+\end{itemize}
+
+\subsection{超高率编码的演示规模}
+
+2026 年 4 月的超高率 QEC 论文（arXiv 预印本，非期刊发表）展示了 $10^{-13}$ 级别的编码级错误率。\textbf{但这是编码层面的数值模拟}，不是硬件演示。它假设了理想的编码实现，未包含物理噪声、shuttling 错误和解码延迟的实际影响。
+
+\section{硬件基础：已验证 vs 未验证}
+
+\subsection{已经做到的}
+
+\begin{itemize}
+\item Aquila 256 量子比特系统在 AWS Braket 上运行（2022 年起）
+\item Harvard/MIT 学术合作者在实验室环境中展示了 3,000+ 中性原子阵列（\textbf{非 QuEra 公司自身}，发表于 Nature 2023-2024）
+\item 48 逻辑量子比特的纠错演示（Nature 2023, Physics World 年度突破）——\textbf{这一结果由 Harvard/MIT 实验室完成}，使用 QuEra 的技术但非 QuEra 的商业硬件
+\item 逻辑魔态蒸馏实验（Nature 2025）——实验演示了原理可行性
+\end{itemize}
+
+\subsection{尚未做到的}
+
+\begin{itemize}
+\item 从 256 到 10,000+ 原子的工程放大（QuEra 的 Gemini 系统据称在开发中，但未公布保真度数据）
+\item 实时 mid-circuit 校验子提取和原子重载在 $>1,000$ 量子比特规模上的连续运行
+\item NVIDIA GPU 实时解码在 QuEra 硬件上的端到端演示
+\item 横向门在 QuEra 自有硬件（非 Harvard/MIT 学术实验室）上的实验验证
+\item 原子 shuttling 在 10,000+ 原子规模上的错误率独立测量
+\end{itemize}
+
+\section{论文验证的真实强度}
+
+学术界确实为 QuEra 的技术路线提供了背书，但背书的\textbf{强度需要分级}：
+
+\begin{center}
+\begin{tabular}{p{3cm}p{5.5cm}p{2.5cm}p{4cm}}
+\toprule
+\textbf{时间} & \textbf{论文} & \textbf{发表状态} & \textbf{验证了什么} \\
+\midrule
+2023.12 & Logical quantum processor (48 逻辑比特) & Nature（期刊） & 逻辑比特原理可行，Harvard/MIT 实验室 \\
+2024.03 & Constant-Overhead FTQC & Nature Physics（期刊） & 恒开销容错的理论框架 \\
+2024.04 & Correlated decoding & PRL（期刊） & 解码方案的理论分析 \\
+2024.12 & Magic state distillation & Nature（期刊） & 魔态蒸馏原理实验 \\
+2025.06 & 6 篇（架构分析、qLDPC、编译） & 混合（arXiv/会议） & 架构组件分析，非硬件演示 \\
+2025.09 & Low-Overhead Transversal FT & Nature（期刊） & 横向容错的实验验证 \\
+2026.04 & Ultra-high-rate QEC & arXiv（预印本） & \textbf{编码层面数值模拟}，非硬件 \\
+2026.05 & Transversal STAR 架构 & PRX Quantum（期刊） & 完整架构的理论方案 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{关键区分}：上述论文中，只有 2023.12 和 2024.12 的 Nature 论文包含在物理硬件上的实验演示——且这些演示是在 Harvard/MIT 学术实验室完成，而非 QuEra 的商业产品。架构论文（2026.05 PRX Quantum）和编码论文（2026.04 arXiv）是理论/模拟工作，不含硬件实验。
+
+\section{综合评估}
+
+\subsection{可信度的真实区间}
+
+基于\"已演示\"与\"未演示\"的区分，对 QuEra 各目标的信心评估如下：
+
+\begin{center}
+\begin{tabular}{p{5cm}p{3cm}p{8cm}}
+\toprule
+\textbf{目标} & \textbf{信心水平} & \textbf{判断依据} \\
+\midrule
+2028 年 10,000+ 物理比特 & 中等（6/10） & 3,000 原子已在实验室展示，但工程放大 3-5 倍在 32 个月内可行性与风险并存 \\
+2028 年 256 逻辑比特 & 中低（5/10） & 48 逻辑比特已展示，256 是 5 倍提升，但需在 QuEra 自有硬件（非学术实验室）上实现 \\
+2028 年 $10^{-6}$ 错误率 & 中低（5/10） & 编码理论支持，但实际硬件的 shuttling 噪声和解码延迟影响未知 \\
+2028-29 年 $10^{-9}$ 错误率 & 低（3/10） & 需要物理错误率、编码效率、解码延迟三者同时优化，目前只有数值模拟支持 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{加分项（支撑信心的因素）}
+
+\begin{itemize}
+\item Google 和软银在 Nature 论文发表后投入 \$2.3 亿，投资者做了技术尽调
+\item Harvard/MIT 的学术合作网络提供持续的研发人才和技术溢出
+\item 中性原子路线在规模化方面确实优于超导路线（单模块 vs 多芯片互联）
+\item STAR 架构经过了同行评审（PRX Quantum），非公司内部白皮书
+\end{itemize}
+
+\subsection{减分项（削弱信心的因素）}
+
+\begin{itemize}
+\item 32 个月从架构论文到商用交付在硬件产业史中极为罕见（芯片 tape-out 周期通常 18-24 个月仅完成设计）
+\item 关键演示（3,000+ 原子、48 逻辑比特）在学术实验室完成，非 QuEra 硬件——自研硬件的工程成熟度低于学术演示水平
+\item $10^{-9}$ 目标需要编码率 $>10:1$ 的 qLDPC 编码在实际硬件上实现——目前只有数值模拟
+\item 原子 shuttling 错误率、实时解码延迟等关键工程参数未公开
+\item 路线图未说明实验演示、自有硬件、商用系统之间的差距如何弥合
+\end{itemize}
+
+\subsection{关键先行指标}
+
+在 2026 年下半年至 2027 年初，以下数据的公开将是判断路线图可信度的重要节点：
+\begin{enumerate}
+\item Gemini 系统（QuEra 自有硬件）的物理比特数量和门保真度
+\item 在 QuEra 自有硬件上的逻辑比特纠错演示（而非 Harvard/MIT 实验室）
+\item 原子 shuttling 在 $>1,000$ 原子规模上的错误率测量
+\item NVIDIA 实时解码在 QuEra 硬件上的延迟数据
+\end{enumerate}
+
+\section*{数据与方法说明}
+本报告基于以下来源：
+\begin{itemize}
+\item PRX Quantum 14, 020357 (2026) --- Transversal STAR 架构论文（同行评审）
+\item Nature 626, 58--65 (2024) --- 48 逻辑比特演示
+\item Nature 595, 227--232 (2021) --- 256 原子可编程模拟器
+\item Nature Physics 20, 832--838 (2024) --- 恒开销容错
+\item arXiv:2509.18294 (2025) --- STAR 架构预印本
+\item arXiv:2604.16209 (2026) --- 超高率 QEC 预印本
+\item QuEra-AWS 联合公告（2026 年 6 月 15 日）
+\item QuEra 官网技术博客及白皮书
+\end{itemize}
+本报告标注为\textbf{内部参考}，评估意见仅代表分析时点的判断。
+\end{document}

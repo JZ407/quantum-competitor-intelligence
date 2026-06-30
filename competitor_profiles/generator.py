@@ -46,20 +46,47 @@ PROFILE_TEMPLATE = {
 
 
 def load_news_for_company(company_name: str, limit: int = 100) -> list:
-    """Load existing news articles for a company from the institutions DB."""
+    """Load existing news articles for a company from the institutions DB.
+    Checks both the main articles table and company-specific tables (e.g. quera_articles)."""
     db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                            'institution_news', 'institutions.db')
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    c.execute('''SELECT title, title_cn, publish_date, summary, summary_cn, url, source
+
+    rows = []
+
+    # 1. Main articles table (no limit — get all matches, dedup later)
+    c.execute('''SELECT title, publish_date, url, source
                  FROM articles
                  WHERE source LIKE ? OR source LIKE ?
-                 ORDER BY publish_date DESC LIMIT ?''',
-              (f'{company_name}%', f'%{company_name}%', limit))
-    rows = [dict(r) for r in c.fetchall()]
+                 ORDER BY publish_date DESC''',
+              (f'{company_name}%', f'%{company_name}%'))
+    rows.extend(dict(r) for r in c.fetchall())
+
+    # 2. Company-specific table (e.g. quera_articles) — prioritized
+    company_table = f'{company_name.lower().split()[0]}_articles'
+    c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (company_table,))
+    if c.fetchone():
+        c.execute(f'''SELECT full_title, title, content, publish_date, url, source_type as source
+                      FROM "{company_table}"
+                      ORDER BY publish_date DESC''')
+        company_rows = [dict(r) for r in c.fetchall()]
+        rows = company_rows + rows
+
+    # Deduplicate by URL
+    seen = set()
+    unique = []
+    for r in rows:
+        url = r.get('url', '')
+        if url and url not in seen:
+            seen.add(url)
+            unique.append(r)
+        elif not url:
+            unique.append(r)
+
     conn.close()
-    return rows
+    return unique[:limit]
 
 
 def synthesize_news_summary(company_name: str, client=None) -> str:
@@ -72,8 +99,8 @@ def synthesize_news_summary(company_name: str, client=None) -> str:
     lines = [f"## {company_name} 新闻时间线\n"]
     for art in articles:
         date = art.get('publish_date', '??') or '??'
-        title = art.get('title_cn') or art.get('title', '') or '(无标题)'
-        summary = art.get('summary_cn') or art.get('summary', '') or ''
+        title = art.get('full_title') or art.get('title_cn') or art.get('title', '') or '(无标题)'
+        summary = art.get('content') or art.get('summary_cn') or art.get('summary', '') or ''
         if summary:
             summary = summary[:200]
         url = art.get('url', '')

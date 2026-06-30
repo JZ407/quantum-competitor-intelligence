@@ -387,14 +387,28 @@ def render_team_section(key_people: list, team_analytics: dict = None) -> str:
     return html
 
 
-def load_publications(profile_id: int, limit: int = 200) -> list:
-    """Load publications for a profile from DB."""
+def load_publications(profile_id: int, limit: int = 200, themes: list = None, search: str = '') -> list:
+    """Load publications for a profile from DB, with optional filters."""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    c.execute('''SELECT * FROM profile_publications WHERE profile_id = ?
-                 ORDER BY COALESCE(pub_date, '0000') DESC LIMIT ?''',
-              (profile_id, limit))
+
+    query = 'SELECT * FROM profile_publications WHERE profile_id = ?'
+    params = [profile_id]
+
+    if themes:
+        theme_clauses = ' OR '.join(['research_themes LIKE ?' for _ in themes])
+        query += f' AND ({theme_clauses})'
+        params.extend([f'%{t}%' for t in themes])
+
+    if search:
+        query += ' AND (title LIKE ? OR authors LIKE ?)'
+        params.extend([f'%{search}%', f'%{search}%'])
+
+    query += ' ORDER BY COALESCE(pub_date, "0000") DESC LIMIT ?'
+    params.append(limit)
+
+    c.execute(query, params)
     rows = [dict(r) for r in c.fetchall()]
     conn.close()
     return rows
@@ -429,14 +443,12 @@ def render_research_output(profile: dict) -> str:
     if themes:
         md += '### 🔬 研究方向分布\n\n'
         theme_labels = {
-            'quantum_algorithms': '量子算法',
-            'quantum_chemistry': '量子化学',
-            'quantum_simulation': '量子模拟',
-            'quantum_information': '量子信息',
-            'error_mitigation': '误差缓解',
-            'tensor_networks': '张量网络',
-            'machine_learning': '机器学习',
-            'quantum_biology': '量子生物学',
+            'quantum_algorithms': '量子算法', 'quantum_chemistry': '量子化学',
+            'quantum_simulation': '量子模拟', 'quantum_information': '量子信息',
+            'error_mitigation': '误差缓解', 'tensor_networks': '张量网络',
+            'machine_learning': '机器学习', 'quantum_biology': '量子生物学',
+            'error_correction': '纠错与容错', 'neutral_atoms': '中性原子',
+            'hardware_platform': '硬件平台',
         }
         max_t = max(themes.values()) if themes else 1
         for theme, count in sorted(themes.items(), key=lambda x: -x[1]):
@@ -460,9 +472,21 @@ def render_research_output(profile: dict) -> str:
         sorted_authors = sorted(authors_with_titles.items(), key=lambda x: -x[1]['papers'])[:15]
         max_a = sorted_authors[0][1]['papers'] if sorted_authors else 1
         for author, info in sorted_authors:
-            bar = '█' * int(info['papers'] / max_a * 30)
+            pct = info['papers'] / max_a
+            bar_w = int(pct * 200)
+            color = '#e94560' if pct > 0.7 else ('#ff9800' if pct > 0.4 else '#53d8fb')
             title_str = f' — *{info["title"]}*' if info.get('title') else ''
-            md += f'- **{author}**{title_str}: {bar} {info["papers"]}篇\n'
+            role_str = f' `{info["role"]}`' if info.get('role') else ''
+            md += (
+                f'<div style="display:flex;align-items:center;margin:2px 0;font-size:0.92em;">'
+                f'<span style="min-width:280px;max-width:320px;text-align:right;padding-right:8px;">'
+                f'<strong>{author}</strong>{role_str}</span>'
+                f'<span style="width:120px;background:#1a1a2e;border-radius:3px;height:10px;margin:0 8px;">'
+                f'<span style="display:block;background:{color};height:100%;width:{int(bar_w*0.6)}px;border-radius:3px;"></span>'
+                f'</span>'
+                f'<span style="color:#888;width:30px;text-align:right;font-size:0.85em;">{info["papers"]}篇</span>'
+                f'</div>\n'
+            )
         md += '\n'
 
     # Monthly trend
@@ -481,9 +505,9 @@ def render_research_output(profile: dict) -> str:
     return md
 
 
-def render_publication_list(profile_id: int, search: str = '', limit: int = 50) -> str:
+def render_publication_list(profile_id: int, search: str = '', limit: int = 50, themes: list = None) -> str:
     """Render a searchable/filterable publication list."""
-    pubs = load_publications(profile_id, limit)
+    pubs = load_publications(profile_id, limit, themes=themes, search=search)
 
     if not pubs:
         return '<p style="color:#888;">暂无论文数据</p>'
@@ -491,8 +515,8 @@ def render_publication_list(profile_id: int, search: str = '', limit: int = 50) 
     # Theme filter buttons (handled in Streamlit, here just render list)
     rows = []
     for pub in pubs:
-        title = pub.get('title', '')
-        authors = pub.get('authors', '')
+        title = pub.get('title') or ''
+        authors = pub.get('authors') or ''
         pub_type = pub.get('pub_type', '')
         journal = pub.get('journal', '')
         pub_date = pub.get('pub_date', '') or ''
@@ -594,52 +618,80 @@ def render_cross_analysis(profile: dict) -> str:
     html += '</style></head><body>'
     html += '<h2>📊 交叉分析：融资 × 产品 × 论文</h2>'
 
-    # Timeline
-    html += '<h3>📅 时间线</h3><div class="timeline">'
-    for year, event, detail in [
-        ('2021','种子轮','$4M'), ('2022','论文','5篇'), ('2023','A轮','$15M'),
-        ('2024','5产品','商用'), ('2025','Q4Bio','$2M'), ('2026','B轮','€18M')
-    ]:
-        html += f'<div class="tl-item"><div class="year">{year}</div><div class="event">{event}</div><div class="detail">{detail}</div></div>'
+    # Timeline — built dynamically from funding + products
+    html += '<h3>📅 关键时间线</h3><div class="timeline">'
+    tl_events = []
+    for f in (funding or []):
+        d = str(f.get('date', ''))[:4]
+        r = f.get('round', '') or ''
+        amt = f.get('amount_usd', 0) or 0
+        if amt >= 1e6: amt_str = f'${amt/1e6:.0f}M'
+        elif amt > 0: amt_str = f'${amt/1e3:.0f}K'
+        else: amt_str = ''
+        tl_events.append((d, r[:10], amt_str))
+    for prod in (products or []):
+        d = str(prod.get('launch_date', ''))[:4]
+        name = prod.get('name', '')[:10]
+        if d and d.isdigit():
+            tl_events.append((d, name, prod.get('status', '')[:4]))
+    tl_events.sort()
+    seen = set()
+    for d, evt, detail in tl_events:
+        key = (d, evt)
+        if key in seen: continue
+        seen.add(key)
+        html += f'<div class="tl-item"><div class="year">{d}</div><div class="event">{evt}</div><div class="detail">{detail}</div></div>'
     html += '</div>'
 
-    # Annual output
+    # Annual output — data-driven from actual publications
     html += '<h3>📈 年度论文产出</h3>'
     yearly = defaultdict(int)
     for p in dated:
         yearly[p['_year']] += 1
-    max_y = max(yearly.values()) if yearly else 1
-    for y in sorted(yearly):
-        n = yearly[y]
-        html += f'<div class="bar-row"><span class="bar-label">{y}年</span><div class="bar-fill" style="width:{max(n*10,3)}px;"></div><span class="bar-num">{n}篇</span></div>'
+    if yearly:
+        max_y = max(yearly.values())
+        for y in sorted(yearly):
+            n = yearly[y]
+            bar_w = max(int(n / max_y * 250), 3)
+            html += f'<div class="bar-row"><span class="bar-label">{y}年</span><div class="bar-fill" style="width:{bar_w}px;"></div><span class="bar-num">{n}篇</span></div>'
+    else:
+        html += '<p style="color:#888;">暂无论文数据</p>'
 
-    # Product-paper mapping
-    html += '<h3>🔗 产品 ↔ 论文主题</h3>'
-    pmap = {
-        'TEM': (['error_mitigation','tensor_networks'], 0),
-        'Aurora': (['quantum_chemistry','quantum_biology','quantum_simulation'], 0),
-        'DQI': (['quantum_information','quantum_simulation','machine_learning'], 0),
-        'Measurement': (['quantum_information'], 0),
-        'Circuit Opt.': (['quantum_algorithms'], 0),
-    }
-    for prod, (themes, _) in pmap.items():
-        cnt = sum(1 for p in pubs for t in (p.get('research_themes') or '').split(',') if t.strip() in themes)
-        pmap[prod] = (themes, cnt)
-    max_c = max(v[1] for v in pmap.values()) if pmap else 1
-    for prod, (themes, cnt) in pmap.items():
-        html += f'<div class="bar-row"><span class="bar-label">{prod}</span><div class="bar-fill" style="width:{max(cnt*7,3)}px;"></div><span class="bar-num">{cnt}篇</span></div>'
+    # Product-paper theme mapping — use actual product names from profile
+    if products and dated:
+        html += '<h3>🔗 产品 ↔ 论文主题</h3>'
+        # Use research_themes from actual publications for the bar
+        theme_counts = Counter()
+        for p in dated:
+            for t in (p.get('research_themes') or '').split(','):
+                t = t.strip()
+                if t: theme_counts[t] += 1
+        if theme_counts:
+            max_t = max(theme_counts.values())
+            theme_labels = {
+                'neutral_atoms': '中性原子硬件', 'quantum_simulation': '量子模拟',
+                'quantum_algorithms': '量子算法', 'error_correction': '纠错与容错',
+                'hardware_platform': '硬件平台', 'quantum_information': '量子信息',
+                'quantum_chemistry': '量子化学', 'error_mitigation': '误差缓解',
+                'tensor_networks': '张量网络', 'machine_learning': '机器学习',
+                'quantum_biology': '量子生物学',
+            }
+            for theme, cnt in theme_counts.most_common(8):
+                label = theme_labels.get(theme, theme)
+                bar_w = max(int(cnt / max_t * 250), 3)
+                html += f'<div class="bar-row"><span class="bar-label">{label}</span><div class="bar-fill" style="width:{bar_w}px;"></div><span class="bar-num">{cnt}篇</span></div>'
 
-    # Findings
+    # Findings — read from profile's cross_analysis field
     html += '<h3>💡 关键发现</h3>'
-    findings = [
-        ('融资→产品: 12个月窗口', '2023年A轮$15M后，2024年密集发布全部5款产品。资金直接转化为可商用产品。'),
-        ('论文→产品→验证闭环', 'TEM最典型：前期论文做技术储备 → 上架IBM Qiskit Catalog → 后续论文验证商用效果。论文是产品的燃料。'),
-        ('三位一体团队', '研发人员=论文作者=产品开发者，同一批人。优势研产一体，劣势可能限制规模化。'),
-        ('Q4Bio的10倍杠杆', '$2M奖金虽小，击败Harvard/Oxford/Stanford的背书直接推动B轮€18M。'),
-        ('学术→商业转型中', '2025-2026论文增速放缓，融资和商业化加速。先建学术信誉，再产品变现。'),
-    ]
-    for title, desc in findings:
-        html += f'<div class="finding"><h4>{title}</h4><p>{desc}</p></div>'
+    ca = profile.get('cross_analysis')
+    if isinstance(ca, str):
+        try: ca = json.loads(ca)
+        except: ca = None
+    if ca and isinstance(ca, dict):
+        for item in ca.get('findings', []):
+            html += f'<div class="finding"><h4>{item.get("title","")}</h4><p>{item.get("desc","")}</p></div>'
+    else:
+        html += '<p style="color:#888;">暂无分析数据</p>'
 
     html += '</body></html>'
     return html
