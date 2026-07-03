@@ -116,7 +116,14 @@
       "Bash(file QuEra/*)",
       "WebFetch(domain:www.chinaventure.com.cn)",
       "WebFetch(domain:www.cls.cn)",
-      "WebFetch(domain:www.163.com)"
+      "WebFetch(domain:www.163.com)",
+      "WebFetch(domain:www.mckinsey.com)",
+      "WebFetch(domain:www.bbtnews.com.cn)",
+      "WebFetch(domain:news.qq.com)",
+      "WebFetch(domain:www.imr.cas.cn)",
+      "WebFetch(domain:finance.eastmoney.com)",
+      "WebFetch(domain:36kr.com)",
+      "WebFetch(domain:jjckb.xinhuanet.com)"
     ]
   }
 }
