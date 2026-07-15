@@ -2,13 +2,14 @@
 
 ## 每天早上
 
-### 1. 启动 MySQL（如未运行）
-```bash
-# MySQL 8.4 未注册为 Windows 服务，需手动启动
-start "" "C:/Program Files/MySQL/MySQL Server 8.4/bin/mysqld.exe" --defaults-file="D:/Claude_code/liangke_daily/config/my.ini"
+### 1. 一键启动平台
 ```
+对 Claude 说: "启动" 或 "启动平台"
+→ 自动执行: MySQL 就绪检查 → 清理僵尸 Streamlit → 启动 Streamlit → 打开浏览器
+```
+脚本: `D:/Claude_code/startup.ps1`
 
-### 2. 更新量科网 Cookie（如过期）
+### 2. 更新量科网 Cookie（每周一/如过期）
 ```
 报错特征: "Cookie expired — 参考来源指向登录页"
 操作: 浏览器登录 www.qtc.com.cn → F12 → Network → 任意请求 → Copy Cookie header
@@ -20,14 +21,6 @@ start "" "C:/Program Files/MySQL/MySQL Server 8.4/bin/mysqld.exe" --defaults-fil
 ```bash
 cd D:/Claude_code/liangke_daily/core
 C:/Python314/python.exe scrape_daily.py
-```
-
-### 4. 启动量子科技情报平台
-```bash
-taskkill //F //IM streamlit.exe
-cd D:/Claude_code/rag_system
-C:/Python314/python.exe -B -m streamlit run examples/daily_report_app.py --server.address 0.0.0.0 --server.port 8501 --server.headless true
-# 访问: http://localhost:8501
 ```
 
 ---

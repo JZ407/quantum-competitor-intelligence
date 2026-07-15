@@ -1,0 +1,29 @@
+{
+  "_comment": "Service dependency manifest for startup.ps1. Add a new entry for each new DB/service.",
+  "services": [
+    {
+      "name": "MySQL 8.4",
+      "port": 3306,
+      "check": {"type": "tcp", "host": "127.0.0.1", "port": 3306},
+      "verify": "C:/Python314/python -c \"import pymysql; pymysql.connect(host='127.0.0.1', user='scraper', password='scraper123', database='liangke_scraper').close()\"",
+      "start": {
+        "exe": "C:/Program Files/MySQL/MySQL Server 8.4/bin/mysqld.exe",
+        "args": "--defaults-file=D:/Claude_code/liangke_daily/config/my.ini"
+      },
+      "wait_seconds": 20,
+      "fatal": true
+    },
+    {
+      "name": "Streamlit Dashboard",
+      "port": 8501,
+      "is_app": true,
+      "start": {
+        "exe": "C:/Python314/python",
+        "args": "-B -m streamlit run examples/daily_report_app.py --server.address 0.0.0.0 --server.port 8501 --server.headless true",
+        "cwd": "D:/Claude_code/rag_system"
+      },
+      "url": "http://localhost:8501",
+      "wait_seconds": 20
+    }
+  ]
+}
