@@ -24,7 +24,7 @@ def run(prompt: str):
 
     env = os.environ.copy()
     env["ANTHROPIC_BASE_URL"] = "https://api.deepseek.com/anthropic"
-    env["ANTHROPIC_AUTH_TOKEN"] = "sk-589d0203dd0b4c96a75914a684139df3"
+    env["ANTHROPIC_AUTH_TOKEN"] = os.environ.get("DEEPSEEK_API_KEY", "")
     env["ANTHROPIC_MODEL"] = "deepseek-v4-pro[1m]"
     env["ANTHROPIC_DEFAULT_SONNET_MODEL"] = "deepseek-v4-pro[1m]"
     env["ANTHROPIC_DEFAULT_HAIKU_MODEL"] = "deepseek-v4-flash"

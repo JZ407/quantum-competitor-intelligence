@@ -1,6 +1,6 @@
 # Windows Powershell 启动高速版 kimi-k2.5 模型
 $env:ANTHROPIC_BASE_URL="https://api.moonshot.cn/anthropic";
-$env:ANTHROPIC_AUTH_TOKEN="sk-I2CycISUgpOUOVmnj6mgF0GQ8IlcKzf4Un9EpfPAEi9OaS49"
+# OLD KEY REVOKED — use $env:DEEPSEEK_API_KEY instead
 $env:ANTHROPIC_MODEL="kimi-k2.6"
 $env:ANTHROPIC_DEFAULT_OPUS_MODEL="kimi-k2.6"
 $env:ANTHROPIC_DEFAULT_SONNET_MODEL="kimi-k2.6"

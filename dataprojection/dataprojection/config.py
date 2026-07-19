@@ -7,9 +7,9 @@ env_path = Path(__file__).parent.parent / ".env"
 load_dotenv(env_path)
 
 # LLM — supports OpenAI-compatible APIs (DeepSeek, Anthropic via proxy, etc.)
-LLM_API_KEY = os.getenv("LLM_API_KEY", "")
-LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.deepseek.com")
-LLM_MODEL = os.getenv("LLM_MODEL", "deepseek-chat")
+LLM_API_KEY = os.path.expandvars(os.getenv("LLM_API_KEY", ""))
+LLM_BASE_URL = os.path.expandvars(os.getenv("LLM_BASE_URL", "https://api.deepseek.com"))
+LLM_MODEL = os.path.expandvars(os.getenv("LLM_MODEL", "deepseek-chat"))
 
 # Data sources
 HISTORICAL_DB_PATH = os.getenv(

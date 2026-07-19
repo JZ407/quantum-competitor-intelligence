@@ -7,3 +7,11 @@ weekly_temp/
 weekly_output/
 *.db
 .DS_Store
+
+# API keys — never commit
+.env
+*.env
+!*.env.example
+
+# Claude Code local settings (may contain session data)
+.claude/settings.local.json

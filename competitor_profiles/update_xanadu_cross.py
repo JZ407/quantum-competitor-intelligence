@@ -1,158 +1,182 @@
 # -*- coding: utf-8 -*-
-"""Cross-analysis for Xanadu vs peers."""
+"""Cross-analysis for Xanadu: papers x funding x products x team."""
 import json, sqlite3
+from collections import Counter
 
 conn = sqlite3.connect("profiles.db")
+conn.row_factory = sqlite3.Row
 
-# Get all profiles for comparison
-profiles = {}
-for row in conn.execute("SELECT id, company_name, total_funding_usd, valuation_usd, employee_count FROM competitor_profiles"):
-    profiles[row[0]] = {
-        'name': row[1], 'funding': row[2] or 0, 'valuation': row[3] or 0,
-        'employees': row[4] or 0
-    }
+xanadu = dict(conn.execute("SELECT * FROM competitor_profiles WHERE id=4").fetchone())
+psiquantum = dict(conn.execute("SELECT * FROM competitor_profiles WHERE id=3").fetchone())
 
-xanadu = profiles.get(4, {})
-psiquantum = profiles.get(3, {})
+for d in [xanadu, psiquantum]:
+    for f in ['funding_history', 'products', 'partitions', 'tech_milestones', 'swot']:
+        if d.get(f) and isinstance(d[f], str):
+            try: d[f] = json.loads(d[f])
+            except: pass
 
-findings = [
-    {
-        "title": "Photonics Dual-Track: CV vs DV - Two Different Scaling Paths",
-        "desc": (
-            "Xanadu and PsiQuantum both focus on photonic quantum computing but pursue completely "
-            "different technical approaches. Xanadu uses continuous-variable (CV) photonics + time-domain "
-            "multiplexing + GKP encoding for error correction, demonstrating 12 logical qubits "
-            "(Nature 2025). PsiQuantum uses discrete-variable (DV) silicon photonics + semiconductor "
-            "fab manufacturing, demonstrating the Omega chipset (Nature 2025). "
-            "The fundamental difference: Xanadu's photons are squeezed states - quantum information "
-            "encoded in continuous amplitude/phase of light; PsiQuantum's photons are single photons - "
-            "quantum information encoded in discrete presence/absence states. "
-            "CV offers theoretical advantages in error correction overhead (up to 10x more efficient "
-            "with GKP encoding), but experimental realization is more complex. DV benefits from "
-            "standardized fab manufacturing, but single-photon source/detector efficiency remains a bottleneck."
-        ),
-    },
-    {
-        "title": "PennyLane: Xanadu's Real Moat - But Monetization Path Unclear",
-        "desc": (
-            "PennyLane's 47% quantum developer share (35,000+ active users, 200K monthly downloads, "
-            "150+ university partners) is the closest thing to a de facto standard in quantum computing. "
-            "Compare: IBM Qiskit ~35%, Google Cirq ~10%, Amazon Braket SDK ~5%. "
-            "But the key question: how do you monetize a quantum developer ecosystem? The history of "
-            "open-source SDK monetization (Red Hat $34B acquisition by IBM in 2019 with ~$5B revenue) "
-            "shows that even industry-standard open-source software takes 10+ years to monetize meaningfully. "
-            "Xanadu's FY2025 $4.6M revenue includes minimal software contribution - primarily DARPA "
-            "and ARPA-E government contracts. If PennyLane were valued independently, referencing "
-            "GitLab ($10B, 30M users), but with only ~100K quantum developers globally, the implied "
-            "$1.5B+ software valuation embedded in Xanadu's $3.1B market cap means each quantum "
-            "developer is valued at ~$15,000 regardless of willingness to pay."
-        ),
-    },
-    {
-        "title": "Founder Structure: Solo Founder vs Founding Teams",
-        "desc": (
-            "Xanadu is the only top-tier quantum computing company founded by a single individual. "
-            "Christian Weedbrook founded Xanadu alone, with a theoretical physics background and no "
-            "co-founders. Compare: PsiQuantum has 4 complementary co-founders (Jeremy O'Brien - "
-            "experimental photonics + Bristol school, Terry Rudolph - theory + FBQC architecture, "
-            "Pete Shadbolt - engineering + photonic processors, Mark Thompson - industry + integrated "
-            "photonics). IonQ was co-founded by Chris Monroe (trapped-ion experimental master) and "
-            "Jungsang Kim (engineering expert). Quantinuum emerged from Honeywell Quantum Solutions "
-            "(30+ years of industrial R&D). In a field that requires physics + engineering + business "
-            "compound expertise, being a solo founder increases CEO decision-making burden and "
-            "single-point-of-failure risk. Weedbrook admitted at 2026 Analyst Day: 'I didn't even "
-            "know how to do payroll at the beginning.'"
-        ),
-    },
-    {
-        "title": "IPO Timing as Double-Edged Sword: First-Mover Advantage vs Valuation Fragility",
-        "desc": (
-            "Xanadu became the world's first publicly traded pure-play photonic quantum company in "
-            "March 2026, pre-empting PsiQuantum's expected IPO. This first-mover advantage has "
-            "strategic value in brand visibility and financing window access. But the cost: as a "
-            "public company, Xanadu faces relentless quarterly scrutiny - and its Q1 2026 numbers "
-            "($2.83M revenue, $20.6M net loss) are difficult to justify to any rational public-market "
-            "investor. PsiQuantum, staying private, can continue raising capital on long-term vision "
-            "without quarterly performance pressure. September 2026 brings the lock-up expiry of "
-            "250M+ legacy shares - if no major commercialization milestone materializes by then, "
-            "Xanadu faces potential mass selling and value destruction."
-        ),
-    },
-    {
-        "title": "Quantum Data Center vs Quantum Computer Factory: A Paradigm Divide",
-        "desc": (
-            "Xanadu's 2029-2030 quantum data center vision (500 logical qubits, ~$1B Toronto "
-            "facility) and PsiQuantum's quantum computer factory vision (Brisbane, Chicago) "
-            "represent fundamentally different things. Xanadu's architecture is inherently "
-            "data-center-style - networked server racks connected by optical fiber, modular "
-            "expansion, similar to traditional cloud data center topology. PsiQuantum's architecture "
-            "is factory-style - monolithic chips manufactured in semiconductor fabs, similar to "
-            "traditional chip manufacturing. If the correct photonic scaling path is networking "
-            "(the core thesis of the Aurora Nature 2025 paper), Xanadu may have an architectural "
-            "advantage. If the correct path is chip-level integration, PsiQuantum's GlobalFoundries "
-            "fab relationship is a stronger barrier."
-        ),
-    },
-    {
-        "title": "$3.1B vs $10.5B Valuation: Software Ecosystem Premium vs Hardware Manufacturing Premium",
-        "desc": (
-            "Xanadu's $3.1B public listing valuation (March 2026) compares to PsiQuantum's $10.5B "
-            "private valuation (May 2026). The apparent 3.4x gap masks a more interesting story: "
-            "Xanadu's $0.55B cumulative funding is only 12% of PsiQuantum's $4.7B. The valuation "
-            "divergence reflects fundamentally different bets. PsiQuantum's valuation reflects "
-            "hardware manufacturing costs (GlobalFoundries fab partnership, Brisbane factory "
-            "construction) and government commitment scale (A$940M Australia) - a fixed-asset "
-            "premium. Xanadu's valuation reflects software ecosystem value (PennyLane 47% developer "
-            "share) - a network-effect premium. Neither logic can be validated by traditional "
-            "valuation models at quantum computing's current stage: one company with no commercial "
-            "revenue and another with $12K revenue per employee both commanding multi-billion-dollar "
-            "valuations."
-        ),
-    },
-]
+x_papers = conn.execute("SELECT * FROM profile_publications WHERE profile_id=4").fetchall()
+p_papers = conn.execute("SELECT * FROM profile_publications WHERE profile_id=3").fetchall()
+
+x_yearly = Counter()
+for r in x_papers:
+    y = (r['pub_date'] or '')[:4]
+    if y and y.isdigit(): x_yearly[int(y)] += 1
+
+p_yearly = Counter()
+for r in p_papers:
+    y = (r['pub_date'] or '')[:4]
+    if y and y.isdigit(): p_yearly[int(y)] += 1
+
+x_authors = Counter()
+for r in x_papers:
+    for a in (r['authors'] or '').split(', '):
+        if a.strip(): x_authors[a.strip()] += 1
+
+p_authors = Counter()
+for r in p_papers:
+    for a in (r['authors'] or '').split(', '):
+        if a.strip(): p_authors[a.strip()] += 1
+
+top2 = x_authors.most_common(2)
+top5_sum = sum(c for _, c in x_authors.most_common(5))
+top2_sum = sum(c for _, c in top2)
+x_total = len(x_papers)
+p_total = len(p_papers)
+x_fund_b = (xanadu.get('total_funding_usd') or 0) / 1e9
+p_fund_b = (psiquantum.get('total_funding_usd') or 0) / 1e9
+x_val_b = (xanadu.get('valuation_usd') or 0) / 1e9
+p_val_b = (psiquantum.get('valuation_usd') or 0) / 1e9
+x_ppb = x_total / (x_fund_b * 100)
+p_ppb = p_total / (p_fund_b * 100)
+
+pre2020 = sum(v for y, v in x_yearly.items() if y < 2020)
+post2020 = sum(v for y, v in x_yearly.items() if y >= 2020)
+post2024 = sum(v for y, v in x_yearly.items() if y >= 2024)
+
+findings = []
+
+# 1. Papers per dollar
+findings.append({
+    "title": "论文资本效率: Xanadu {:.0f}篇/$100M vs PsiQuantum {:.0f}篇/$100M -- {:.0f}倍差距".format(x_ppb, p_ppb, x_ppb/p_ppb),
+    "desc": (
+        "Xanadu {}篇论文 / ${:.2f}B累计融资 = {:.0f}篇/$100M。"
+        "PsiQuantum {}篇 / ${:.1f}B = {:.0f}篇/$100M。"
+        "Xanadu的论文效率是PsiQuantum的{:.0f}倍。但这反映的是两种完全不同的战略选择: "
+        "Xanadu是软件+算法驱动——PennyLane开源生态、量子化学算法、QEC架构研究天然大量产出论文；"
+        "PsiQuantum是制造+工程驱动——GlobalFoundries芯片量产、Brisbane工厂建设是资本密集型活动，不产生论文。"
+        "论文效率高不代表技术绝对领先，论文效率低不代表技术落后——两者在光量子的不同位置，比较维度不同。"
+    ).format(x_total, x_fund_b, x_ppb, p_total, p_fund_b, p_ppb, x_ppb/p_ppb),
+})
+
+# 2. Author concentration
+findings.append({
+    "title": "作者集中度极端: Arrazola({}篇)+Killoran({}篇) = {}/{} ({:.0f}%) -- 关键人物风险".format(
+        top2[0][1], top2[1][1], top2_sum, x_total, top2_sum/x_total*100),
+    "desc": (
+        "Top 2作者(Arrazola {}篇 + Killoran {}篇)占{}/{} = {:.0f}%的Xanadu论文。"
+        "Top 5作者占比{:.0f}%。对比PsiQuantum: Top 2(Santagati 8 + Thompson 7)仅占15/33 = 45%。"
+        "Xanadu的研究产出高度依赖少数核心科学家。如果Arrazola或Killoran离开——"
+        "正如Quesada/Su/Vasmer/Dhand已经离开——技术传承和持续产出将受到严重冲击。"
+        "这种集中度在初创公司常见，但对于一家$3.1B的上市公司来说，是投资者应密切关注的关键人物风险。"
+    ).format(top2[0][1], top2[1][1], top2_sum, x_total, top2_sum/x_total*100, top5_sum/x_total*100),
+})
+
+# 3. Paper output vs funding cycle
+findings.append({
+    "title": "论文产出与融资周期的背离: 2018年($11M时){}篇 vs 2025年($250M+时){}篇 -- 从学术到产品的战略转型".format(
+        x_yearly.get(2018, 0), x_yearly.get(2025, 0)),
+    "desc": (
+        "2018年是Xanadu论文最多年份({}篇)，当时公司仅融资~$11M、不到30人。"
+        "2025年({}篇)融资已超$250M、260人——论文产出下降了42%。"
+        "但这并非衰退，而是战略转型: 2018年的论文是PennyLane/Strawberry Fields的基础设施建设；"
+        "2025年的论文是Aurora硬件验证(Nature 2025)和QROM实际工作负载优化。"
+        "论文数量下降的同时，产品质量上升——从发论文证明路线可行转向造机器证明产品可行。"
+        "这个转型轨迹与PsiQuantum一致(后者2025-2026年仅3篇论文)，但Xanadu的过渡更为平缓——"
+        "仍保持每月约1.5篇的产出，在商业化同时维持学术影响力。"
+    ).format(x_yearly.get(2018, 0), x_yearly.get(2025, 0)),
+})
+
+# 4. Product-paper mapping
+findings.append({
+    "title": "产品-论文1:1映射: 每个硬件里程碑都有Nature论文背书",
+    "desc": (
+        "Borealis量子优势(2022-06) 对应 Nature 2022 量子计算优势论文——被引1000+次。"
+        "Aurora模块化QC(2025-01) 对应 Nature 2025 模块化光量子计算机论文——181+引用。"
+        "PennyLane(2018) 对应 arXiv 1811.04968——量子可微编程的奠基文献。"
+        "QROM算法突破(2026) 对应 arXiv 2605.20334 'Halving the cost of QROM'——直接服务于Aurora硬件编译。"
+        "这种1:1的论文-产品对应率在量子计算公司中极为罕见。对比PsiQuantum: 33篇论文中仅Omega芯片组(Nature 2025)"
+        "与产品直接对应，其余多为架构或应用论文。Xanadu的策略是'用Nature论文为产品发布做学术信用背书'——"
+        "这是一种高效的品牌策略，但也意味着每次产品发布都必须达到Nature级别的技术突破，研发管线压力极大。"
+    ),
+})
+
+# 5. Team evolution
+findings.append({
+    "title": "团队三阶段演进: 理论(QEC) -> 应用(化学) -> 商业化(工业合作)",
+    "desc": (
+        "阶段1 (2017-2020, {}篇论文): QEC与架构奠基。Bourassa/Tzitrin/Vasmer/Alexander等"
+        "多伦多大学博士群构建了Blueprint(Quantum 2021)——Xanadu硬件架构的理论基础。"
+        "阶段2 (2021-2023, ~34篇): 算法与应用扩展。Arrazola/Killoran团队将PennyLane打造为"
+        "量子软件行业标准(47%份额)。Delgado/Fomichev/Motlagh加入，电池材料/量子化学成为新方向。"
+        "阶段3 (2024-2026, {}篇): 工业商业化。Volkswagen/Toyota/Rolls-Royce/Lockheed Martin"
+        "成为论文合著者。QROM成本减半(2026)直接优化Aurora编译。"
+        "DARPA QBI Stage B($15M)和ARPA-E($2M)进入应用验证阶段。"
+        "这个三阶段演进表明Xanadu的团队建设与产品路线高度对齐——先建理论、再做软件、最后找客户。"
+    ).format(pre2020, post2024),
+})
+
+# 6. PennyLane paradox
+findings.append({
+    "title": "PennyLane悖论: 47%量子开发者使用率，但软件收入几乎为零",
+    "desc": (
+        "PennyLane是全球#1量子SDK(47%开发者份额, 200K月下载, 150+大学合作)——这是Xanadu最强大的资产，"
+        "也是最大的变现难题。FY2025营收$4.6M中，软件收入占比极低: DARPA QBI($15M)是验证费而非License费，"
+        "ARPA-E($2M)是研究拨款，仅Volkswagen/Mitsubishi/Rolls-Royce产生少量商业软件收入。"
+        "对比Red Hat被IBM以$34B收购时年营收~$5B——从开源到$5B营收用了20+年。"
+        "量子开发者全球总量仅~100K，Xanadu的软件TAM在当前阶段极小。"
+        "如果PennyLane不能在未来3-5年内找到可行的商业变现模式(企业License/云消费/硬件绑定)，"
+        "那么Xanadu的$3.1B估值中至少$1.5B的'软件生态溢价'将难以兑现。"
+    ),
+})
+
+# 7. Talent pipeline
+findings.append({
+    "title": "人才管道: 多伦多大学(5+博士) vs PsiQuantum的Bristol帮——学缘结构的差异",
+    "desc": (
+        "Xanadu核心学术人才来源: 多伦多大学(Vernon/Bourassa/Tzitrin/Quesada)、"
+        "滑铁卢IQC(Arrazola/Killoran)、UCL(Vasmer/Dan Browne纠错学派)。"
+        "与PsiQuantum的Bristol-O'Brien学派(6位博士)形成对比: PsiQuantum的人才高度依赖"
+        "创始人Jeremy O'Brien的个人学术网络；Xanadu则更多元——多伦多-滑铁卢量子走廊的自然集聚。"
+        "多伦多大学是Xanadu的人才大本营(UofT Magazine称过半数员工搬到多伦多加入Xanadu)，"
+        "但人才外流已经开始: Quesada->Polytechnique Montreal, Su->PolyU Hong Kong, "
+        "Di Matteo->UBC, Vasmer->Inria Paris, Dhand->QC Design。"
+        "5位核心科学家离开Xanadu进入学术界或创业——这既证明了Xanadu的人才培养能力，"
+        "也暴露了留住顶尖量子人才的挑战(上市公司薪酬 vs 学术界自由度)。"
+    ),
+})
+
+# 8. Valuation decomposition
+findings.append({
+    "title": "估值逻辑解构: ${:.1f}B市值中，硬件值多少？软件值多少？".format(x_val_b),
+    "desc": (
+        "Xanadu SPAC估值${:.1f}B，PsiQuantum私募估值${:.1f}B——差距3.4倍。"
+        "假设市场的硬件制造溢价为PsiQuantum贡献了$7-8B(两个工厂+GF合作伙伴关系)，"
+        "那么Xanadu的硬件(Aurora+Borealis+量子数据中心规划)可能值$1-1.5B。"
+        "剩余$1.6-2.1B是PennyLane软件生态+团队的隐含价值。"
+        "按260人团队算，人均估值~$12M——在深度科技公司中处于高位但并非离谱(OpenAI人均~$50M)。"
+        "关键变量: 如果2028年Aurora实现容错操作，硬件估值可能翻倍；"
+        "如果PennyLane找到变现路径(如被AWS/Azure收购或推出付费Cloud版本)，软件估值可能独立实现。"
+        "风险面: 2026年9月250M+股解锁后，如果无重大商业化里程碑，市场可能将估值压回$1.5-2B区间。"
+    ).format(x_val_b, p_val_b),
+})
 
 ca = {"findings": findings}
 conn.execute("UPDATE competitor_profiles SET cross_analysis=? WHERE id=4",
              (json.dumps(ca, ensure_ascii=False),))
 conn.commit()
-
-# Import key papers from institution_news
-inst_conn = sqlite3.connect("../institution_news/institutions.db")
-inst_conn.row_factory = sqlite3.Row
-inst_c = inst_conn.cursor()
-
-imported = 0
-key_urls = [
-    ("nature.com/articles/s41586-022-04725-x", "Nature", "journal_article"),
-    ("nature.com/articles/s41586-024-08406-9", "Nature", "journal_article"),
-    ("arxiv.org/abs/2605.20334", "", "preprint"),
-    ("arxiv.org/abs/2602.20270", "", "preprint"),
-]
-
-for url_frag, journal, pub_type in key_urls:
-    inst_c.execute(
-        "SELECT title, url, publish_date FROM articles WHERE url LIKE ? AND source='Xanadu Research' LIMIT 1",
-        (f"%{url_frag}%",)
-    )
-    row = inst_c.fetchone()
-    if row:
-        try:
-            conn.execute(
-                "INSERT INTO profile_publications (profile_id, title, authors, journal, pub_date, url, pub_type) VALUES (4, ?, 'Xanadu et al.', ?, ?, ?, ?)",
-                (row["title"][:300], journal, row["publish_date"] or "", row["url"], pub_type)
-            )
-            imported += 1
-            print(f"  + {row['title'][:80]}")
-        except Exception as e:
-            print(f"  Skip: {e}")
-
-inst_conn.close()
-conn.commit()
-
-total = conn.execute("SELECT COUNT(*) FROM profile_publications WHERE profile_id=4").fetchone()[0]
 conn.close()
 
-print(f"\nCross-analysis: {len(findings)} findings")
+print("Cross-analysis: {} findings".format(len(findings)))
 for f in findings:
-    print(f"  - {f['title']}")
-print(f"\nImported papers: {imported} ({total} total)")
+    print("  - {}".format(f['title'][:80]))

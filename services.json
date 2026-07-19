@@ -23,7 +23,7 @@
         "cwd": "D:/Claude_code/rag_system"
       },
       "url": "http://localhost:8501",
-      "wait_seconds": 20
+      "wait_seconds": 30
     }
   ]
 }

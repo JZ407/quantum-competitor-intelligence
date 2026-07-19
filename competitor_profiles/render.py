@@ -505,6 +505,106 @@ def render_research_output(profile: dict) -> str:
     return md
 
 
+def render_author_contribution(profile_id: int, top_n: int = 25) -> str:
+    """Render author contribution bar chart from profile_publications.
+    Color-coded: Xanadu employees (blue), external/advisor (orange), former (gray)."""
+    from collections import Counter
+    import sqlite3, os
+
+    db = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'profiles.db')
+    conn = sqlite3.connect(db)
+    rows = conn.execute(
+        'SELECT authors FROM profile_publications WHERE profile_id=?', (profile_id,)
+    ).fetchall()
+    conn.close()
+
+    if not rows:
+        return ''
+
+    c = Counter()
+    for r in rows:
+        for a in (r[0] or '').split(', '):
+            a = a.strip()
+            if a and len(a) > 2:
+                c[a] += 1
+
+    top = c.most_common(top_n)
+    max_n = top[0][1] if top else 1
+
+    # Known affiliation mapping (from verification above)
+    xanadu_people = {
+        'J. Arrazola', 'N. Killoran', 'M. Schuld', 'N. Quesada', 'J. Izaac',
+        'T. Bromley', 'S. Jahangiri', 'D. Su', 'Pablo Antonio Moreno Casares',
+        'Stepan Fomichev', 'C. Weedbrook', 'H. Qi', 'K. Sabapathy', 'Danial Motlagh',
+        'Modjtaba Shokrian Zini', 'K. Br\'adler', 'B. Morrison', 'Z. Vernon',
+        'Ignacio Loaiza', 'David Wierichs', 'Alain Delgado', 'A. Delgado',
+        'G. Dauphinais', 'M. Menotti', 'Joseph Bowles', 'I. Tzitrin', 'J. Bourassa',
+        'Utkarsh Azad', 'M. Vasmer', 'L. Helt', 'K. Tan', 'Kasra Hejazi',
+        'R. N. Alexander', 'Robert A. Lang',
+    }
+    external_people = {
+        'P. Rebentrost', 'S. Lloyd', 'Jonathan E. Mueller', 'Arne-Christian Voigt',
+        'Nathan Wiebe', 'M. Liscidini',
+    }
+    former_people = {
+        'Ish Dhand', 'O. D. Matteo',
+    }
+    known_titles = {
+        'J. Arrazola': 'Head of Algorithms',
+        'N. Killoran': 'Head of Software',
+        'C. Weedbrook': 'Founder & CEO',
+        'Z. Vernon': 'CTO / Head of Hardware',
+        'M. Schuld': 'Quantum ML Lead',
+        'N. Quesada': 'Photonic QC Researcher',
+        'J. Izaac': 'Strawberry Fields Lead',
+        'Ish Dhand': 'Former Head of Architecture',
+        'G. Dauphinais': 'Lead Quantum Architecture',
+        'M. Vasmer': 'Sr. Quantum Architecture',
+        'J. Bourassa': 'Blueprint Lead Author',
+        'B. Morrison': '#2 Patent Inventor (Hardware)',
+        'S. Lloyd': 'Chief Scientific Advisor (MIT)',
+        'O. D. Matteo': 'Former PennyLane Dev → UBC Prof',
+        'P. Rebentrost': 'NUS CQT (External)',
+    }
+
+    html = '<h3>✍️ 论文贡献 Top 25</h3>'
+    html += '<div style="font-size:0.85em;color:#888;margin-bottom:8px;">'
+    html += '<span style="color:#53d8fb;">■ Xanadu 现员工</span> '
+    html += '<span style="color:#ff9800;">■ 外部合作/顾问</span> '
+    html += '<span style="color:#888;">■ 前员工</span></div>'
+
+    for i, (name, cnt) in enumerate(top, 1):
+        pct = cnt / max_n
+        bar_w = int(pct * 280)
+
+        if name in former_people:
+            color = '#888888'
+        elif name in external_people:
+            color = '#ff9800'
+        elif name in xanadu_people:
+            color = '#53d8fb'
+        else:
+            color = '#53d8fb'  # default: assume Xanadu
+
+        title = known_titles.get(name, '')
+        title_html = f' <span style="color:#666;font-size:0.8em;">— {title}</span>' if title else ''
+
+        html += (
+            f'<div style="display:flex;align-items:center;margin:1px 0;font-size:0.85em;">'
+            f'<span style="min-width:30px;text-align:right;color:#666;padding-right:6px;">{i}</span>'
+            f'<span style="min-width:260px;max-width:300px;text-align:right;padding-right:8px;'
+            f'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'
+            f'<strong>{name}</strong>{title_html}</span>'
+            f'<span style="width:160px;background:#1a1a2e;border-radius:3px;height:10px;margin:0 6px;">'
+            f'<span style="display:block;background:{color};height:100%;width:{bar_w}px;border-radius:3px;"></span>'
+            f'</span>'
+            f'<span style="color:#aaa;min-width:35px;text-align:right;font-size:0.85em;">{cnt}</span>'
+            f'</div>\n'
+        )
+
+    return html
+
+
 def render_publication_list(profile_id: int, search: str = '', limit: int = 50, themes: list = None) -> str:
     """Render a searchable/filterable publication list."""
     pubs = load_publications(profile_id, limit, themes=themes, search=search)
