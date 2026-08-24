@@ -3,6 +3,7 @@ __pycache__/
 *.log
 *.tmp
 *.pkl
+archive/backups/
 data/cookies/
 weekly_temp/
 weekly_output/
