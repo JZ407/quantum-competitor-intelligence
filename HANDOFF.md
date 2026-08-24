@@ -1,7 +1,7 @@
 # 量子科技情报平台 — 项目接手指南 / 迁移计划
 
 > 本文档面向接手的开发者或 AI 模型：读完即可理解项目全貌、启动环境并继续日常运营。
-> 最后更新：2026-08-24。配套文档：`ARCHITECTURE.md`（架构图）、`SOP.md`（日常操作）、各子仓库 `README.md`。
+> 最后更新：2026-08-24（修订：仓库拓扑修正为 6 个；dataprojection 标注废弃）。配套文档：`ARCHITECTURE.md`（架构图）、`SOP.md`（日常操作）、各子仓库 `README.md`。
 
 ---
 
@@ -17,24 +17,27 @@
 | Python | **3.14**，位于 `C:/Python314/python.exe`（所有脚本用它） |
 | 数据库 | MySQL 8.4（`C:/Program Files/MySQL/MySQL Server 8.4`），配置 `liangke_daily/config/my.ini` |
 | 浏览器 | Edge（Cookie 提取走 CDP 端口 9222） |
-| 关键环境变量 | `DEEPSEEK_API_KEY_LOCALUSE`（看板 LLM / 周报 / dataprojection 共用） |
+| 关键环境变量 | `DEEPSEEK_API_KEY_LOCALUSE`（看板 LLM / 周报 共用） |
 | 备份 | OneDrive，由 `liangke_daily/core/sync_to_onedrive.py` 同步 `historical_final.db` |
 
 > ⚠️ 环境变量命名坑：会话内使用 `DEEPSEEK_API_KEY_LOCALUSE`，与 Claude Code 自己的 token 相互独立，不要写成 `DEEPSEEK_API_KEY`。
 
 ## 3. Git 仓库拓扑（重要）
 
-**5 个独立 GitHub 仓库，全部属主 `JZ407`**，路径固定不可改（脚本硬编码 `D:/Claude_code/...` 绝对路径）：
+**6 个独立 GitHub 仓库，全部属主 `JZ407`**，路径固定不可改（脚本硬编码 `D:/Claude_code/...` 绝对路径）：
 
 | 目录 | 远程仓库 | 角色 |
 |------|---------|------|
-| `D:/Claude_code`（根） | `JZ407/quantum-competitor-intelligence` | 编排 + 竞对档案 + dataprojection |
+| `D:/Claude_code`（根） | `JZ407/quantum-competitor-intelligence` | 编排 + 竞对档案 |
 | `liangke_daily/` | `JZ407/liangke-daily-scraper` | 每日抓取 + MySQL ORM + 投融资 |
 | `liangke_historical/` | `JZ407/liangke-historical` | 历史库脚本 |
 | `rag_system/` | `JZ407/quantum-intelligence-platform` | 看板 + RAG + 周报 |
 | `knowledge_graph/` | `JZ407/quantum-knowledge-graph` | 知识图谱 |
+| `institution_news/` | `JZ407/quantum-institution-crawlers` | 机构新闻爬虫 |
 
-**⚠️ 子模块警告**：根仓库的 index 记录了 4 个 gitlink（`git status` 中显示为 `m`），但**没有 `.gitmodules` 文件**。因此 `git clone` 根仓库**不会自动拉子模块**——接手时必须手动 `git clone` 4 个子仓库到上述对应目录。数据文件（`*.db`、`*.pkl`、`cookies.txt`）均在 `.gitignore` 中，**不随 git 走**，需从备份/OneDrive 或重新生成恢复。
+> ⚠️ `dataprojection/`（数镜 DataMirror）**已废弃**，不属于维护范围；`dataprojection.db` 保留在备份中仅供归档，不要再启动 `dataprojection/app.py`。
+
+**⚠️ 子模块警告**：根仓库的 index 记录了 5 个 gitlink（`git status` 中显示为 `m`），但**没有 `.gitmodules` 文件**。因此 `git clone` 根仓库**不会自动拉子模块**——接手时必须手动 `git clone` 5 个子仓库到上述对应目录。数据文件（`*.db`、`*.pkl`、`cookies.txt`）均在 `.gitignore` 中，**不随 git 走**，需从备份/OneDrive 或重新生成恢复。
 
 **提交约定**：子模块先提交 → 根仓库最后提交（更新 gitlink 指针）；提交信息用 `类型: 中文描述` 格式（feat/fix/chore/docs）；每个 commit 附 `Co-Authored-By: Claude <noreply@anthropic.com>`。
 
@@ -43,13 +46,13 @@
 | 库 | 位置 | 数据 | 写入方 | 读取方 |
 |----|------|------|--------|--------|
 | `liangke_scraper` (MySQL) | 127.0.0.1:3306，user=`scraper`/`scraper123` | articles **2,769**（page_type: reference/flash/article/websearch） | `scrape_daily.py` + websearch 入库脚本 | 看板 |
-| `historical_final.db` | `liangke_historical/` | articles **11,582**（**唯一历史真源**） | `sync_ws_to_final.py`、`merge_v2_v3.py` | 看板、dataprojection、知识图谱、导出 |
+| `historical_final.db` | `liangke_historical/` | articles **11,582**（**唯一历史真源**） | `sync_ws_to_final.py`、`merge_v2_v3.py` | 看板、知识图谱、导出 |
 | `institutions.db` | `institution_news/` | articles **3,740** + quera_articles 582 | `run_all.py` | 看板 |
 | `profiles.db` | `competitor_profiles/` | 4 档案 / 173 来源 / 345 论文 | 档案建设脚本 | `render.py` → HTML |
 | `conferences.db` | `conference_db/` | conferences 211 | conf_fetcher | 看板 |
 | `literature.db` | `lit-review/data/` | 22 论文 / 223 作者 | 文献笔记流程 | 文献综述 |
 | `resources.db` | `rag_system/data/` | reports 10 | 专题简报入库 | RAG |
-| `dataprojection.db` | `dataprojection/data/` | 对话会话 | dataprojection app | 自身 |
+| ~~`dataprojection.db`~~ | ~~`dataprojection/data/`~~ | ~~对话会话~~ | ~~dataprojection app~~ | ~~自身~~ |
 
 **架构要点**：投融资看板是**双库架构**——同时查 MySQL（tags.funding 结构化）和 SQLite final（tags LIKE '%融资%'），`pd.concat` 后按 公司+轮次+年 去重，标题黑名单过滤股市/财报/资助类误标。
 
@@ -131,12 +134,13 @@ powershell -ExecutionPolicy Bypass -File D:/Claude_code/backup.ps1
 ```bash
 # 1. 装环境: Python 3.14 + MySQL 8.4 + Edge 浏览器
 
-# 2. 拉代码（根仓库不含子模块，必须手动 clone 全部 5 个）
+# 2. 拉代码（根仓库不含子模块，必须手动 clone 全部 6 个）
 git clone https://github.com/JZ407/quantum-competitor-intelligence.git D:/Claude_code
 git clone https://github.com/JZ407/liangke-daily-scraper.git    D:/Claude_code/liangke_daily
 git clone https://github.com/JZ407/liangke-historical.git       D:/Claude_code/liangke_historical
 git clone https://github.com/JZ407/quantum-intelligence-platform.git D:/Claude_code/rag_system
 git clone https://github.com/JZ407/quantum-knowledge-graph.git  D:/Claude_code/knowledge_graph
+git clone https://github.com/JZ407/quantum-institution-crawlers.git D:/Claude_code/institution_news
 
 # 3. 解压 zip 并放回原位
 #    databases/*.db → 对应项目目录（historical_final.db 是最关键的）
