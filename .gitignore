@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 *.log
 *.tmp
+*.pkl
 data/cookies/
 weekly_temp/
 weekly_output/

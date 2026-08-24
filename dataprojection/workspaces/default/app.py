@@ -21,20 +21,8 @@ st.set_page_config(
 
 # ═══ 数据库路径 ═══
 import os
-DB_CANDIDATES = [
-    r"D:\Claude_code\liangke_historical\historical_final.db",
-    r"D:\Claude_code\liangke_historical\historical_v3.db",
-    r"D:\Claude_code\liangke_historical\historical.db",
-    r"D:\Claude_code\liangke_historical\historical_v2.db",
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "historical.db"),
-]
-DB_PATH = None
-for p in DB_CANDIDATES:
-    if os.path.exists(p):
-        DB_PATH = p
-        break
-
-if DB_PATH is None:
+DB_PATH = r"D:\Claude_code\liangke_historical\historical_final.db"
+if not os.path.exists(DB_PATH):
     st.error("❌ 未找到数据库文件！请检查 historical_final.db 路径。")
     st.stop()
 
