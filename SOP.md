@@ -33,12 +33,20 @@ C:/Python314/python.exe scrape_daily.py
 → 自动执行 7 组 query，返回新事件
 → 验证 URL → 入库 → 刷新看板
 ```
+入库脚本（2026-09 起）: `liangke_daily/core/ingest_websearch.py --input batch_YYYYMMDD.json`（历史日期变体脚本已归档）
 
 ### 6. 机构新闻抓取
 ```bash
 cd D:/Claude_code/institution_news
 C:/Python314/python.exe run_all.py
 # 注意: Google Research 跳过了论文 LLM 翻译（改动在 sources/google_quantum_research.py 第 132 行）
+```
+
+### 6.5 数据备份（自动，每日 09:05）
+```
+计划任务 QuantumIntel_DailyBackup 自动执行 backup.ps1（MySQL dump + 全部 .db + 记忆库 → zip → OneDrive）
+手动跑: powershell -ExecutionPolicy Bypass -File D:/Claude_code/backup.ps1
+检查: archive/backups/ 有当日 zip 即正常；每季度解压一份验证可恢复
 ```
 
 ---

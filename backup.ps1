@@ -136,5 +136,19 @@ if (Test-Path $zip) {
     exit 1
 }
 
+# ── 6. 异地拷贝（OneDrive）──
+$onedriveBackup = "C:/Users/zhouj/OneDrive/liangke_database/backups"
+if (Test-Path (Split-Path $onedriveBackup)) {
+    New-Item -ItemType Directory -Force $onedriveBackup | Out-Null
+    Copy-Item $zip $onedriveBackup -ErrorAction SilentlyContinue
+    if (Test-Path (Join-Path $onedriveBackup (Split-Path $zip -Leaf))) {
+        Write-Host "  OK  已拷贝到 OneDrive: $onedriveBackup" -ForegroundColor Green
+    } else {
+        Write-Host "  [WARN] OneDrive 拷贝失败" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "  [SKIP] OneDrive 目录不存在，跳过异地拷贝" -ForegroundColor Yellow
+}
+
 # 清理暂存
 Remove-Item -Recurse -Force $stage -ErrorAction SilentlyContinue

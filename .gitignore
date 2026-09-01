@@ -17,6 +17,7 @@ weekly_output/
 
 # 独立仓库（待有 GitHub remote 后转为正式 submodule）
 ragflow_upload/
+competitor_profiles/
 
 # Claude Code local settings (may contain session data)
 .claude/settings.local.json

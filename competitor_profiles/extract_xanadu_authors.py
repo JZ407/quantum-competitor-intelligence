@@ -126,16 +126,25 @@ for i, (name, cnt) in enumerate(author_counts.most_common(50), 1):
     print(f"  {i:2d}. {name:45s} {cnt:3d}")
 
 # ── Import to profile_publications ──
+# 注意：profile_publications 每行由所属公司的采集脚本全量重建；
+# profile_id 按公司名运行时解析，勿硬编码（防 id 错位清错公司）
 profiles_conn = sqlite3.connect(PROFILES_DB)
-profiles_conn.execute('DELETE FROM profile_publications WHERE profile_id=4')
+pid_row = profiles_conn.execute(
+    "SELECT id FROM competitor_profiles WHERE company_name='Xanadu'"
+).fetchone()
+if not pid_row:
+    raise SystemExit('[FAIL] competitor_profiles 中找不到 Xanadu，中止导入')
+pid = pid_row[0]
+profiles_conn.execute('DELETE FROM profile_publications WHERE profile_id=?', (pid,))
 imported = 0
 for p in paper_details:
     pub_type = 'journal_article' if p.get('journal') else 'preprint'
     try:
         profiles_conn.execute('''
             INSERT INTO profile_publications (profile_id, title, authors, journal, pub_date, url, pub_type, arxiv_id)
-            VALUES (4, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
+            pid,
             str(p.get('title', ''))[:300],
             str(p.get('authors', ''))[:800],
             str(p.get('journal', ''))[:200],
