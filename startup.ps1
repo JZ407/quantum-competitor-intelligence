@@ -3,6 +3,16 @@
 param([switch]$NoBrowser)
 
 $ErrorActionPreference = "Continue"
+
+# 环境变量注册表兜底：本脚本可能从旧环境进程树启动（看不到 setx 之后的变量），
+# 从用户注册表补齐后再启动子进程，保证子进程能读到密钥。
+foreach ($v in 'LIANGKE_MYSQL_PASSWORD', 'RAGFLOW_API_KEY', 'DEEPSEEK_API_KEY_LOCALUSE') {
+    if (-not $env:$v) {
+        $val = [Environment]::GetEnvironmentVariable($v, 'User')
+        if ($val) { $env:$v = $val }
+    }
+}
+
 $cfg = Get-Content (Join-Path $PSScriptRoot "services.json") -Raw -Encoding UTF8 | ConvertFrom-Json
 $svcs = $cfg.services
 
