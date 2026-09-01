@@ -81,8 +81,11 @@ if ($SkipMysql) {
 } else {
     Write-Host "[$($ok+1)/$total] MySQL dump (liangke_scraper) ..." -ForegroundColor Yellow
     $dump = "C:/Program Files/MySQL/MySQL Server 8.4/bin/mysqldump.exe"
-    if (Test-Path $dump) {
-        & $dump -h 127.0.0.1 -u scraper -pscraper123 --single-transaction --routines liangke_scraper 2>$null |
+    $mysqlPass = $env:LIANGKE_MYSQL_PASSWORD
+    if (-not $mysqlPass) {
+        Write-Host "  [SKIP] LIANGKE_MYSQL_PASSWORD 环境变量未设置，跳过 MySQL dump" -ForegroundColor Yellow
+    } elseif (Test-Path $dump) {
+        & $dump -h 127.0.0.1 -u scraper "-p$mysqlPass" --single-transaction --routines liangke_scraper 2>$null |
             Out-File -Encoding utf8 (Join-Path $stage "databases/liangke_scraper_mysql_dump.sql")
         if ($LASTEXITCODE -eq 0) {
             $sizeMB = [math]::Round((Get-Item (Join-Path $stage "databases/liangke_scraper_mysql_dump.sql")).Length / 1MB, 1)

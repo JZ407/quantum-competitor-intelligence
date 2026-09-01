@@ -16,7 +16,7 @@ if %errorlevel%==0 (
     REM 等待 MySQL 就绪（最多 15 秒）
     for /L %%i in (1,1,15) do (
         timeout /t 1 /nobreak >nul
-        "C:/Python314/python" -c "import pymysql; pymysql.connect(host='127.0.0.1', user='scraper', password='scraper123', database='liangke_scraper').close()" >nul 2>&1
+        "C:/Python314/python" -c "import pymysql,os; pymysql.connect(host='127.0.0.1', user='scraper', password=os.environ.get('LIANGKE_MYSQL_PASSWORD',''), database='liangke_scraper').close()" >nul 2>&1
         if !errorlevel!==0 goto mysql_ready
         echo   等待 MySQL ... %%i/15
     )

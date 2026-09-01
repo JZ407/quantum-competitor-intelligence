@@ -1,0 +1,15 @@
+[submodule "liangke_daily"]
+	path = liangke_daily
+	url = https://github.com/JZ407/liangke-daily-scraper.git
+[submodule "liangke_historical"]
+	path = liangke_historical
+	url = https://github.com/JZ407/liangke-historical.git
+[submodule "institution_news"]
+	path = institution_news
+	url = https://github.com/JZ407/quantum-institution-crawlers.git
+[submodule "knowledge_graph"]
+	path = knowledge_graph
+	url = https://github.com/JZ407/quantum-knowledge-graph.git
+[submodule "rag_system"]
+	path = rag_system
+	url = https://github.com/JZ407/quantum-intelligence-platform.git

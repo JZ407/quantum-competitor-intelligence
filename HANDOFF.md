@@ -45,7 +45,7 @@
 
 | 库 | 位置 | 数据 | 写入方 | 读取方 |
 |----|------|------|--------|--------|
-| `liangke_scraper` (MySQL) | 127.0.0.1:3306，user=`scraper`/`scraper123` | articles **2,769**（page_type: reference/flash/article/websearch） | `scrape_daily.py` + websearch 入库脚本 | 看板 |
+| `liangke_scraper` (MySQL) | 127.0.0.1:3306，user=`scraper`（密码走环境变量 `LIANGKE_MYSQL_PASSWORD`） | articles **2,769**（page_type: reference/flash/article/websearch） | `scrape_daily.py` + websearch 入库脚本 | 看板 |
 | `historical_final.db` | `liangke_historical/` | articles **11,582**（**唯一历史真源**） | `sync_ws_to_final.py`、`merge_v2_v3.py` | 看板、知识图谱、导出 |
 | `institutions.db` | `institution_news/` | articles **3,740** + quera_articles 582 | `run_all.py` | 看板 |
 | `profiles.db` | `competitor_profiles/` | 4 档案 / 173 来源 / 345 论文 | 档案建设脚本 | `render.py` → HTML |
@@ -148,8 +148,8 @@ git clone https://github.com/JZ407/quantum-institution-crawlers.git D:/Claude_co
 #    memory/ → C:\Users\<用户>\.claude\projects\D--Claude-code\memory\（AI 接手时）
 
 # 4. 恢复 MySQL（二选一：导 dump 或直接复制 datadir）
-mysql -u root -p -e "CREATE DATABASE liangke_scraper; CREATE USER 'scraper'@'localhost' IDENTIFIED BY 'scraper123'; GRANT ALL ON liangke_scraper.* TO 'scraper'@'localhost';"
-mysql -u scraper -pscraper123 liangke_scraper < databases/liangke_scraper_mysql_dump.sql
+mysql -u root -p -e "CREATE DATABASE liangke_scraper; CREATE USER 'scraper'@'localhost' IDENTIFIED BY '<LIANGKE_MYSQL_PASSWORD 的值>'; GRANT ALL ON liangke_scraper.* TO 'scraper'@'localhost';"
+mysql -u scraper -p%LIANGKE_MYSQL_PASSWORD% liangke_scraper < databases/liangke_scraper_mysql_dump.sql
 
 # 5. 装依赖 + 设环境变量（torch/faiss/sentence-transformers 在 3.14 有成功记录）
 pip install -r 各仓库/requirements.txt
