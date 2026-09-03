@@ -1,7 +1,7 @@
 # 量子科技情报平台 — 项目接手指南 / 迁移计划
 
 > 本文档面向接手的开发者或 AI 模型：读完即可理解项目全貌、启动环境并继续日常运营。
-> 最后更新：2026-08-24（修订：仓库拓扑修正为 6 个；dataprojection 标注废弃）。配套文档：`ARCHITECTURE.md`（架构图）、`SOP.md`（日常操作）、各子仓库 `README.md`。
+> 最后更新：2026-09-04（修订：仓库拓扑 8 个；子模块已正式化；RAGFlow 上传项目入库）。配套文档：`ARCHITECTURE.md`（架构图）、`SOP.md`（日常操作）、`开发规范.md`（四层开发规范）、各子仓库 `README.md`。
 
 ---
 
@@ -24,20 +24,22 @@
 
 ## 3. Git 仓库拓扑（重要）
 
-**6 个独立 GitHub 仓库，全部属主 `JZ407`**，路径固定不可改（脚本硬编码 `D:/Claude_code/...` 绝对路径）：
+**8 个独立仓库，主仓库子模块 5 个 + 2 个待注册**，路径固定不可改（脚本硬编码 `D:/Claude_code/...` 绝对路径）：
 
 | 目录 | 远程仓库 | 角色 |
 |------|---------|------|
-| `D:/Claude_code`（根） | `JZ407/quantum-competitor-intelligence` | 编排 + 竞对档案 |
+| `D:/Claude_code`（根） | `JZ407/quantum-competitor-intelligence` | 编排 + 规范 + 备份 |
 | `liangke_daily/` | `JZ407/liangke-daily-scraper` | 每日抓取 + MySQL ORM + 投融资 |
 | `liangke_historical/` | `JZ407/liangke-historical` | 历史库脚本 |
 | `rag_system/` | `JZ407/quantum-intelligence-platform` | 看板 + RAG + 周报 |
 | `knowledge_graph/` | `JZ407/quantum-knowledge-graph` | 知识图谱 |
 | `institution_news/` | `JZ407/quantum-institution-crawlers` | 机构新闻爬虫 |
+| `competitor_profiles/` | （本地已 init，待建 GitHub 远程） | 竞对档案 |
+| `ragflow_upload/` | （本地已 init，待建 GitHub 远程） | DB → RAGFlow 知识库同步 |
 
-> ⚠️ `dataprojection/`（数镜 DataMirror）**已废弃**，不属于维护范围；`dataprojection.db` 保留在备份中仅供归档，不要再启动 `dataprojection/app.py`。
+> ⚠️ `dataprojection/`（数镜 DataMirror）**已废弃**，不属于维护范围，2026-09 已从主仓库清理。
 
-**⚠️ 子模块警告**：根仓库的 index 记录了 5 个 gitlink（`git status` 中显示为 `m`），但**没有 `.gitmodules` 文件**。因此 `git clone` 根仓库**不会自动拉子模块**——接手时必须手动 `git clone` 5 个子仓库到上述对应目录。数据文件（`*.db`、`*.pkl`、`cookies.txt`）均在 `.gitignore` 中，**不随 git 走**，需从备份/OneDrive 或重新生成恢复。
+**子模块说明**（2026-09-01 已修复）：根仓库现有 `.gitmodules` 正式登记 5 个子模块，`git clone` 后执行 `git submodule update --init` 即可复现；`competitor_profiles/`、`ragflow_upload/` 已在根仓库 .gitignore 中（本地独立仓库，建好 GitHub 远程后登记为子模块）。数据文件（`*.db`、`*.pkl`、`cookies.txt`）均在 `.gitignore` 中，**不随 git 走**，需从备份/OneDrive 或重新生成恢复。
 
 **提交约定**：子模块先提交 → 根仓库最后提交（更新 gitlink 指针）；提交信息用 `类型: 中文描述` 格式（feat/fix/chore/docs）；每个 commit 附 `Co-Authored-By: Claude <noreply@anthropic.com>`。
 
